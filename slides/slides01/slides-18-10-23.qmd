@@ -1,0 +1,367 @@
+---
+title: "Análise Multivariada"
+subtitle: "Bacharelado em Administração"
+author: "Prof. Washington Santos da Silva"
+institute: "IFMG - Campus Formiga"
+date: today
+date-format: long
+lang: "pt"
+format: 
+  revealjs:
+    slide-number: true
+    progress: true
+    incremental: false
+    transition: slide
+    code-link: true
+    self-contained: false
+    preview-links: false
+    chalkboard: false
+    overview: true
+    logo: img/logo.jpg
+    css: logo.css
+editor: source
+crossref:
+  fig-title: '**Fig.**'
+  fig-labels: arabic
+  title-delim: "**.**"
+execute: 
+  echo: true
+bibliography: referencias.bib
+csl: associacao-brasileira-de-normas-tecnicas.csl
+---
+
+## Summário: Aula 
+
+- Aprendizagem Supervisionada vs. Não Supervisionada
+
+- Análise de Componentes Principais em R:
+
+  - Abordagem 1: Usando base R
+  - Abordagem 2: Usando o `tidyverse`
+
+- Documentos computacionais:
+
+    - notebook: `componentes_principais.Rmd`
+    
+
+## Aprendizagem Supervisionada vs. Não Supervisionada
+
+A maioria dos problemas em Ciência de Dados se 
+enquadra em uma de duas categorias: 
+
+- Aprendizgem Supervisionada, ou;
+- Aprendizgem Não Supervisionada.
+
+
+## Aprendizagem Supervisionada 
+
+- Nesse cenário, observamos um conjunto de características 
+$(X_1,X_2,\ldots,X_p)$ para cada observação, assim como 
+uma variável resposta $Y$. 
+
+- O objetivo então é ajustar um modelo que relacione $Y$ aos preditores $(X_1,X_2,\ldots,X_p)$, com o objetivo de: 
+
+    - **previsão**: prever com precisão a resposta para futuras observações, 
+      ou;
+    - **inferência**: compreender melhor a relação entre a resposta e os 
+       preditores.
+       
+
+## Aprendizagem Supervisionada
+       
+- Exemplos de Modelos/Algoritmos de Aprendizagem Supervisionada:
+
+    - Modelos de Regressão (linear, não-linear, logística...);
+    - Árvores de Decisão, Random Forests;
+    - Redes Neurais;
+    - Suport Vector Machines (SVM);
+    - Deep Learning;
+    - Reinforcement Learning, entre outros.
+
+## Aprendizagem Supervisionada {.center}
+
+> A situação é referida como **supervisionada** por termos uma variável 
+resposta que *supervisiona* a aprendizagem do modelo.
+
+
+## Aprendizagem Não Supervisionada
+
+- Neste cenário, observamos apenas um conjunto de características $(X_1,X_2,\ldots,X_p)$ para cada objeto, mas não há uma variável 
+resposta $Y$.
+
+- Por não termos uma resposta $Y$ não temos fazer previsões ou 
+inferências.
+
+- a situação é referida como não supervisionada porque não temos variável 
+resposta que pode supervisionar a aprendizagem dos modelos/algoritmos.
+
+
+## Desafios da Aprendizagem Não Supervisionada {.center}
+
+> A Aprendizagem Não Supervisionada é mais subjetiva do que a supervisionada, pois não existe um objetivo simples para a análise, como a previsão de uma variável resposta.
+
+
+## Desafios da Aprendizagem Não Supervisionada
+
+- As técnicas Não Supervisionadas tem crescido em importância em 
+  vários campos:
+
+    - subgrupos de pacientes com câncer de mama agrupados por medidas 
+      de expressão gênica.
+
+    - grupos de compradores caracterizados por sua navegação e 
+      históricos de compras,
+
+    - O Google pode escolher quais resultados de 
+      pesquisa serão exibidos para um indivíduo com base nos 
+      históricos de outros indivíduos com padrões de pesquisa 
+      semelhantes.
+
+
+## Aprendizagem Não Supervisionada
+
+- Que tipo de análise estatística é possível nestes casos? 
+
+- Podemos buscar entender as relações entre as preditoras   
+  $(X_1,X_2,\ldots,X_p)$ ou entre as observações.
+  
+- Por exemplo: "**Há subgrupos distitintos entre as variáveis ou entre as observações?**"
+
+- A **Análise de Agrupamento** constitui um conjunto de algoritmos não supervisionados para responder a perguntas como esta.
+      
+
+## Aprendizagem Não Supervisionada
+
+- Outro exemplo: "**Como podemos reduzir a dimensionalidade dos dados, mantendo as informações essenciais das variáveis e identificando os padrões de variação mais significativos entre elas?**"
+
+- A **Análise de Componentes Principais**, que vocês viram semana passada 
+  com a Profa. Ariana, é o algortimo não supervisionado para responder a 
+  esta pergunta.
+
+
+## Uma "Vantagem" da Aprendizagem Não Supervisionada
+
+- Muitas vezes é mais fácil obter **dados não rotulados** - de um laboratório,
+instrumento ou um computador - do que **dados rotulados**, que podem
+requerer intervenção humana.
+
+- Por exemplo, é difícil avaliar automaticamente o sentimento geral de uma crítica de filme: é favorável ou não?
+
+## 
+
+![](img/ml.jpeg){width=70%}
+  
+
+## Análise de Componentes Principais
+
+- PCA produz uma representação de **baixa dimensão** de um conjunto de dados.
+
+- Encontra uma sequência de **combinações lineares dos variáveis** que têm 
+variância máxima e são mutuamente não correlacionadas.
+
+- Além de produzir variáveis derivadas para uso em problemas de aprendizagem supervisionada, a PCA também é uma ferramenta para visualização de dados, ou 
+seja, é uma ferramenta para a **Análise Exploratória de Dados**.
+
+
+## Análise de Componentes Principais
+
+- A PCA também pode ser usada como ferramenta para **imputação de dados**, ou seja, para preencher dados faltantes em uma matriz de dados.
+
+
+## Análise de Componentes Principais
+
+- Suponha que desejamos visualizar $n$ observações com medições em um 
+conjunto de $p$ características ($X_1,X_2, \ldots,X_p$), como parte de uma análise exploratória de dados.
+
+- Poderíamos fazer isso examinando **gráficos de dispersão** bidimensionais 
+dos dados, cada um dos quais contém as medições das $n$ observações em duas 
+das características.
+
+
+## Análise de Componentes Principais
+
+- Entretanto, temos $p(p-1)/2$ gráficos de dispersão, por exemplo, 
+com $p = 10$, teríamos 45 gráficos.
+
+- Se $p$ é grande, então certamente não será é viável observar todos; 
+
+- Além disso, muito provavelmente nenhum deles será informativo, uma vez 
+que cada um contém apenas uma pequena fração do total informações presentes 
+no conjunto de dados.
+
+- É necessário um método melhor para visualizar as $n$ observações quando $p$ 
+é grande.
+
+
+## Análise de Componentes Principais
+
+- Em particular, gostaríamos de encontrar uma 
+**representação de baixa dimensão** dos dados que capturasse o **máximo de informação** possível.
+
+- Por exemplo, se pudermos obter uma representação bidimensional dos dados que capture a maior parte da informação, então poderemos representar graficamente 
+as observações neste espaço de baixa dimensão.
+
+
+## Análise de Componentes Principais
+
+- O PCA fornece uma ferramenta para fazer exatamente isso. 
+
+- PCA encontra uma representação de baixa dimensão de um conjunto de dados que contenha o máximo possível de variação (informação).
+
+- A ideia é que cada uma das $n$ observações está no espaço $p$-dimensional, 
+mas nem todas estas dimensões são igualmente informativas.
+
+
+## Análise de Componentes Principais
+
+- A PCA procura um pequeno número de dimensões que sejam tão informaticas 
+quanto possível, onde o conceito de informativa é medido pela quantidade que 
+as observações variam ao longo de cada dimensão, ou seja, é medida pela 
+**variabilidade**.
+
+- Cada uma das dimensões encontradas pelo PCA é uma combinação linear
+dos $p$ caracteríticas (variáveis preditoras).
+
+
+## Obtendo os Componentes Principais
+
+- O *primeiro componente principal* de um conjunto de características ($X_1,X_2, \ldots,X_p$) é a combinação linear das características que possue a maior variância.: 
+
+$$
+Z_1 = \phi_{11}X_1 + + \phi_{21}X_2 + \ldots + \phi_{p1}X_p
+$$
+
+- *Normalizada* significa que: $\sum_{j=1}^{p} \phi_{j1}^2 = 1$. 
+
+- Nos referimos aos elementos $\phi_{11},\ldots,\phi_{p1}$ como as **cargas** 
+do primeiro componente principal. 
+
+
+## Obtendo os Componentes Principais
+
+- Juntas, as cargas constituem o **vetor de cargas** (*loading vector*) do componente principal:
+$(\phi_{11}, \phi_{21}\ldots,\phi_{p1})^T$
+
+- Assim, dado um conjunto de dados $X$ $(n \times p)$, como calculamos o 
+primeiro componente principal? 
+
+
+## Obtendo os Componentes Principais
+
+- Como estamos interessados apenas na variância, assumimos que cada uma das variáveis em $X$ foi **centrada** para ter média zero. 
+
+- Procuramos então a combinação linear dos $x$'s amostrais da forma:
+
+
+$$
+z_{i1} = \phi_{11}x_{i1} + + \phi_{21}x_{i2} + \ldots + \phi_{p1}X_{ip}
+$${#eq-z}
+
+- que possui a maior variância amostral, sujeita a restrição $\sum_{j=1}^{p}\phi_{j1}^2 = 1$.
+
+
+## Obtendo os Componentes Principais
+
+- Portanto, o vetor de cargas do primeiro componente principal é a solução do 
+seguinte problema de otimização:
+
+$$
+\begin{align*}
+\underset{\phi_{11},\ldots,\phi_{p1}}{maximizar}   & \,\, \Bigl[\frac{1}{n}\sum_{i=1}^{1} \Bigl(\sum_{j=1}^{p}\phi_{j1}x_{ij}\Bigr)^2 \Bigr]   \\
+\text{sujeito a:}  & \,\, \sum_{j=1}^{p}\phi_{j1}^2 = 1
+\end{align*}
+$${#eq-pricomp}
+
+
+## Obtendo os Componentes Principais
+
+- A partir da @eq-z, a função objetivo (@eq-pricomp) pode ser escrita como:
+
+$$
+\frac{1}{n}\sum_{i=1}^{1} \Bigl(\sum_{j=1}^{p}\phi_{j1}x_{ij}\Bigr)^2 = 
+\frac{1}{n}\sum_{i=1}^n z_{i1}^2
+$$
+
+- Uma vez que $\frac{1}{n}\sum_{1=1}^n x_{ij} = 0$, a média dos 
+$z_{11},\ldots,z_{n1}$ também é igual a zero.
+
+- Portanto, a função objetivo que maximizamos é apenas a variância amostral 
+dos $n$ valores de $z_{i1}$.
+
+
+## Obtendo os Componentes Principais
+
+- Nos referimos aos $z_{11},\ldots,z_{n1}$ como os **scores** do primeiro 
+componente principal.
+
+- O problema descrito pela @eq-pricomp pode ser resolvido por duas técnicas 
+de álgebra linear: 
+
+    - Decomposição espectral (*eigen decomposition*).
+    - Decomposição em Valor Singular (SVD = *singular Value Decomposition*).
+    
+
+## Geometria da PCA
+
+- O vetor de cargas $\phi_1$ com elementos 
+$\phi_{11}, \phi_{21},\ldots,\phi_{p1}$ define uma direção no espaço de características ao longo da qual os dados variam mais.
+
+- Se projetarmos os $n$ pontos de dados $x_1,\ldots,x_n$ nesta
+direção, os valores projetados são os próprios scores do componente principal
+$z_{11};\ldots; z_{n1}$.
+
+
+## Geometria da PCA
+
+![](img/pca_geom.jpeg)
+
+
+## Outros Componentes Principais
+
+- O segundo componente principal é a combinacão linear de  $X_1,\ldots,X_p$ 
+que possui a variância máxima entre todas as combinações lineares 
+que não são correlacionadas com $Z_1$.
+
+- Os scores do segundo componente principal $z_{12}, z_{22},\ldots,z_{n2}$ 
+tem a forma:
+
+
+$$
+z_{i2} = \phi_{12}x_{i1} + + \phi_{22}x_{i2} + \ldots + \phi_{p2}X_{ip}
+$$
+
+- sendo $\phi_2$ o vetor de cargas do do segundo componente principal, 
+com elementos $\phi_{12}, \phi_{22},\ldots,\phi_{p2}$
+
+
+## Outros Componentes Principais
+
+- Ocorre que restringir $Z_2$ em não ser correlacionado com
+$Z_1$ é equivalente a restringir a direção $\phi_2$ a ser
+ortogonal (perpendicular) à direção $\phi_1$. E assim por diante.
+
+- As direções dos componentes principais $\phi_1, \phi_2, \phi_3,\ldots$ são 
+a sequência ordenada de vetores singulares à direita da matriz $X$, e as 
+variâncias dos componentes são $\frac{1}{n}$ vezes o quadrados dos valores singulares.
+
+- Existem no máximo $min(n-1; p)$ componentes principais.
+
+
+## Ilustração: Dados `USAarrests` 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
