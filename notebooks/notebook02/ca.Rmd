@@ -1,0 +1,14 @@
+---
+title: 'Lab: Análise de Correspondência em R'
+output: html_notebook
+---
+
+## Análise de Correspondência em R
+
+
+```{r}
+# simulate normal random variates
+
+
+```
+
