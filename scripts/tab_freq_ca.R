@@ -1,6 +1,20 @@
 
 
+# NOME: tab_freq_ca.R
+#
+# DESCRICAO: - script para aula 2 em 25/10/2023 da disciplina optativa 
+#              Analise Multivariada do bach. em administracao.
+#             - Topicos tratados:
+#            1. cria uma tabela de frequencia manualmente 
+#               para ilustrar analise de correspondencia simples.
+#
+# AUTOR: Washington S. da Silva                                                       #
+# ULTIMA ALTERACAO: 15/10/2023                                          
 
+
+# packages
+library(readr)
+library(here)
 
 # frequências para cada célula
 
@@ -42,11 +56,9 @@ frequencias <-
 # linhas = 29 empresas
 
 matriz_freq <- matrix(frequencias, nrow = 29, ncol = 15, byrow = TRUE)
-matriz_freq
 
 # converte a matriz para tabela de contingência
 tabela_contingencia <- as.table(matriz_freq)
-tabela_contingencia
 
 # nomeia as dimensões da tabela de contingência
 dimnames(tabela_contingencia) <-
@@ -82,26 +94,28 @@ dimnames(tabela_contingencia) <-
       "Toyota",
       "Visa"
     ),
-    facetas = c(
+    atributos = c(
       "Charme",
       "Alegria",
       "Ousadia",
       "Pés no chão",
       "Honestidade",
-      "Imaginacao",
-      "Inteligencia",
+      "Imaginação",
+      "Inteligência",
       "Ao ar livre",
-      "Confianca",
-      "Animacao",
+      "Confiança",
+      "Animação",
       "Sucesso",
-      "Resistencia",
+      "Resistência",
       "Atualidade",
       "Classe alta",
       "Saudável"
     )
   )
 
-# tabela de contingência
-print(tabela_contingencia)
+
+# salva a tabela no formato rds
+path <- here("dados_clean", "brands_ac.rds")
+readr::write_rds(tabela_contingencia, path)
 
 

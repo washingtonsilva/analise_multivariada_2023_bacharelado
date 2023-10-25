@@ -29,6 +29,71 @@
       margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
 <link rel="stylesheet" href="slides-25-10-23_files/libs/revealjs/dist/theme/quarto.css">
 <link rel="stylesheet" href="logo.css">
@@ -339,7 +404,7 @@ Prof.&nbsp;Washington Santos da Silva
     </div>
 </div>
 
-  <p class="date">24 de outubro de 2023</p>
+  <p class="date">25 de outubro de 2023</p>
 </section><section id="ambiente-virtual-de-aprendizagem" class="slide level2"><h2>Ambiente Virtual de Aprendizagem</h2>
 <ul>
 <li>
@@ -374,7 +439,7 @@ Prof.&nbsp;Washington Santos da Silva
 </ul></section><section id="análise-de-correspondência-motivação" class="slide level2"><h2>Análise de Correspondência: Motivação</h2>
 <ul>
 <li><p>A Análise de Correspondência é uma das técnicas mais mágicas em análise de dados.</p></li>
-<li><p>Ela resume os padrões em uma tabela de dados em uma visualização conhecida para nós: o biplot.</p></li>
+<li><p>Ela resume os padrões em uma (grande) tabela de dados categóricos em gráficos que facilitam a interpretação: o biplot, é um deles.</p></li>
 <li><p>Considere a tabela de contingência no próximo slide.</p></li>
 <li>
 <p>É uma grande tabela composta por 42 linhas, cada uma representando uma marca diferente, e 15 colunas representando atributos das marcas.</p>
@@ -950,6 +1015,313 @@ Prof.&nbsp;Washington Santos da Silva
 </li>
 <li><p>O mesmo raciocíno vale para Apple e Porcsh.</p></li>
 <li><p>A posição relativa das demais empresa no gráfico é consistente com as semelhanças de seus respectivos resíduos.</p></li>
+</ul></section><section id="resíduos-do-teste-chi2-e-análise-de-correspondência-2" class="slide level2"><h2>Resíduos do Teste <span class="math inline">\(\chi^2\)</span> e Análise de Correspondência</h2>
+<ul>
+<li><p>Agora veja como as variáveis (colunas) da tabela são representadas no biplot.</p></li>
+<li><p>Os resíduos dos atributos <strong>pés no chão</strong> e <strong>alegria</strong> tem tamanho parecido, e é por isso que estão próximos um do outro no mapa.</p></li>
+<li><p>A característica menos semelhante a <strong>pés no chão</strong> é <strong>ousadia</strong>, e é por isso que esses atributos estão em lados opostos do mapa.</p></li>
+</ul></section><section id="resíduos-do-teste-chi2-e-análise-de-correspondência-3" class="slide level2 scrollable"><h2>Resíduos do Teste <span class="math inline">\(\chi^2\)</span> e Análise de Correspondência</h2>
+<ul>
+<li><p>Agora observe a variancia explicada exibida nos eixos do biplot.</p></li>
+<li><p>A dimensão horizontal explica 34,4% da variação dos dados enquanto a dimensão vertical explica apenas 22,2%.</p></li>
+<li><p>A variância relativa explicada pelas dimensões é relavitivamente baixa, isso não é bom, ou seja, esse mapa não consta toda a história da associação entre linhas e colunas.</p></li>
+<li><p>Quanto maior a variância explicada pelas dimensões, mais completa e mais precisas são as associacões e as interpretações.</p></li>
+</ul></section><section id="análise-de-correspondência-em-r" class="slide level2"><h2>Análise de Correspondência em R</h2>
+<ul>
+<li><p>O arquivo <code>brands_ac.rds</code> contém a tabela de contingência entre <code>marcas</code> e <code>atributos de personalidade</code> das marcas exibida anteriormente.</p></li>
+<li><p>É um tipo muito comum de pesquisa de marketing.</p></li>
+</ul></section><section id="importando-os-dados" class="slide level2 scrollable"><h2>Importando os dados</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>url <span class="ot">&lt;-</span> <span class="st">"https://github.com/washingtonsilva/analise_multivariada_2023_bacharelado/raw/main/dados_clean/brands_ac.rds"</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a>brands_ac <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_rds</span>(url)</span>
+<span id="cb1-3"><a href="#cb1-3"></a>brands_ac</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                       atributos
+marcas                  Charme Alegria Ousadia Pés no chão Honestidade
+  American Express          20       9      15          10          14
+  Apple computers           25      27      23          14          27
+  Avon cosmetics            33      33       7          26          25
+  Calvin Klein perfume      59      25      50           7          13
+  Campbell's soup           22      30       8          62          50
+  Colgate toothpaste        20      45      13          51          56
+  Diet Coke                 13      43      20          21          20
+  Guess jeans               20      18      36           8           6
+  Hallmark cards            58      57       6          28          51
+  IBM computers             11      10      16          12          26
+  Kmart                     12      48      12          68          45
+  Kodak film                19      42       8          35          50
+  Lee jeans                 12      22      24          40          14
+  Lego                       9      51       9          45          49
+  Levi's jeans              27      35      49          47          31
+  Lexus                     40      10      32           7          23
+  Mattel toys               15      62       7          24          28
+  McDonald's                10      64      10          33          15
+  Mercedes                  52      23      39           6          35
+  Michelin tires             7      12      23          31          38
+  Nike athletic shoes        9      24      48          17          12
+  Oil of Olay lotion        46      20      11          29          33
+  Pepsi Cola                11      53      29          24          18
+  Porsche                   50      24      76           5          35
+  Reebok athletic shoes     13      31      44          21          22
+  Revlon cosmetics          45      27      18          19          11
+  Sony televisions          22      24      27          18          35
+  Toyota                    19      26      19          41          39
+  Visa                      18      18      24          20          24
+                       atributos
+marcas                  Imaginação Inteligência Ao ar livre Confiança Animação
+  American Express              17           44          14        26       14
+  Apple computers               54           71           4        32       34
+  Avon cosmetics                20           10           6        23        7
+  Calvin Klein perfume          31           16          11        21       38
+  Campbell's soup               11           11          16        53       14
+  Colgate toothpaste            17           32          12        82       19
+  Diet Coke                     26            9          35        31       29
+  Guess jeans                   14            7          22         9       18
+  Hallmark cards                54           24           4        50       24
+  IBM computers                 51           75           2        56       18
+  Kmart                         17           17          30        46       13
+  Kodak film                    33           38          54        67       16
+  Lee jeans                     12            5          59        19       23
+  Lego                          58           32           6        41       17
+  Levi's jeans                  23           16          72        52       47
+  Lexus                         29           49          32        42       24
+  Mattel toys                   62           18          14        24       17
+  McDonald's                    25           15          18        30       16
+  Mercedes                      28           61          36        66       35
+  Michelin tires                14           41          66        55       31
+  Nike athletic shoes           43           21          80        38       54
+  Oil of Olay lotion            16           21          11        37       14
+  Pepsi Cola                    33            6          37        29       36
+  Porsche                       49           64          48        52       64
+  Reebok athletic shoes         41           27          87        41       55
+  Revlon cosmetics              30           13           9        31       14
+  Sony televisions              59           69           5        64       30
+  Toyota                        33           41          64        66       36
+  Visa                          18           44          22        61       26
+                       atributos
+marcas                  Sucesso Resistência Atualidade Classe alta Saudável
+  American Express           63          20         30          69        8
+  Apple computers            43          13         53          33       24
+  Avon cosmetics             23           6         20           6       26
+  Calvin Klein perfume       44           5         30          81       10
+  Campbell's soup            31          12         19          11       80
+  Colgate toothpaste         56          23         37           9       52
+  Diet Coke                  48          10         43           6       17
+  Guess jeans                21          18         27          36        6
+  Hallmark cards             44           5         23          35       49
+  IBM computers              65          31         55          38       26
+  Kmart                      45          12         29           3       45
+  Kodak film                 50          12         33          17       29
+  Lee jeans                  17          44         24          11       10
+  Lego                       37          32         20           5       39
+  Levi's jeans               54          71         46          30       26
+  Lexus                      50          25         48          76       13
+  Mattel toys                29          22         30           6       23
+  McDonald's                 59          14         39           4       16
+  Mercedes                   79          43         55          94       27
+  Michelin tires             40          79         29          33       17
+  Nike athletic shoes        50          58         54          40       16
+  Oil of Olay lotion         28           4         19          39       43
+  Pepsi Cola                 37          11         38           7       13
+  Porsche                    83          36         54          89       12
+  Reebok athletic shoes      50          54         51          30       17
+  Revlon cosmetics           42           6         32          38       25
+  Sony televisions           61          12         78          41       21
+  Toyota                     56          59         48          15       36
+  Visa                       69          28         52          40       18</code></pre>
+</div>
+</div>
+</section><section id="teste-de-chi2" class="slide level2 scrollable"><h2>Teste de <span class="math inline">\(\chi^2\)</span>
+</h2>
+<ul>
+<li><p>Para interpretar a análise de correspondência, o primeiro passo é avaliar se há uma dependência significativa entre as linhas e colunas.</p></li>
+<li><p>Um método formal é usar o teste de <span class="math inline">\(\chi^2\)</span> para examinar a associação entre variáveis de linha (marcas) e coluna (atributos):</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">chisq.test</span>(brands_ac)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Pearson's Chi-squared test
+
+data:  brands_ac
+X-squared = 3841.8, df = 392, p-value &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<ul>
+<li>O valor-p é muito inferior a 0.05, o que fornece forte evidência de que existe associação entre as marcas e os atributos de personalidade indicados pelos respondentes da pesquisa.</li>
+</ul></section><section id="análise-de-correspondência" class="slide level2 scrollable"><h2>Análise de Correspondência</h2>
+<p>Vamos utilizar a função <code>CA</code> do pacote <code>factoMineR</code> para executar a Análise de Correspondência:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>ac_resultado <span class="ot">&lt;-</span> FactoMineR<span class="sc">::</span><span class="fu">CA</span>(brands_ac, <span class="at">graph =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="fu">summary</span>(ac_resultado)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+FactoMineR::CA(X = brands_ac, graph = FALSE) 
+
+The chi square of independence between the two variables is equal to 3841.76 (p-value =  0 ).
+
+Eigenvalues
+                       Dim.1   Dim.2   Dim.3   Dim.4   Dim.5   Dim.6   Dim.7
+Variance               0.102   0.076   0.036   0.031   0.011   0.007   0.006
+% of var.             35.985  27.000  12.643  10.966   4.040   2.566   2.155
+Cumulative % of var.  35.985  62.985  75.629  86.595  90.635  93.201  95.356
+                       Dim.8   Dim.9  Dim.10  Dim.11  Dim.12  Dim.13  Dim.14
+Variance               0.004   0.003   0.003   0.001   0.001   0.001   0.000
+% of var.              1.277   1.233   0.988   0.504   0.348   0.201   0.094
+Cumulative % of var.  96.633  97.865  98.854  99.358  99.705  99.906 100.000
+
+Rows (the 10 first)
+                        Iner*1000    Dim.1    ctr   cos2    Dim.2    ctr   cos2
+American Express      |    10.595 | -0.430  4.991  0.479 | -0.263  2.482  0.179
+Apple computers       |     8.272 | -0.110  0.415  0.051 | -0.296  4.028  0.371
+Avon cosmetics        |     6.700 |  0.424  3.530  0.535 | -0.244  1.555  0.177
+Calvin Klein perfume  |    18.327 | -0.483  7.452  0.413 | -0.339  4.891  0.203
+Campbell's soup       |    21.229 |  0.671 13.988  0.670 | -0.094  0.366  0.013
+Colgate toothpaste    |    10.186 |  0.433  7.096  0.708 | -0.085  0.361  0.027
+Diet Coke             |     4.645 |  0.138  0.514  0.113 |  0.156  0.871  0.143
+Guess jeans           |     6.779 | -0.417  3.349  0.502 |  0.093  0.223  0.025
+Hallmark cards        |    12.027 |  0.288  3.078  0.260 | -0.392  7.573  0.480
+IBM computers         |    10.905 | -0.134  0.636  0.059 | -0.254  3.051  0.213
+                         Dim.3    ctr   cos2  
+American Express      | -0.140  1.507  0.051 |
+Apple computers       | -0.213  4.453  0.192 |
+Avon cosmetics        |  0.237  3.129  0.167 |
+Calvin Klein perfume  |  0.452 18.584  0.362 |
+Campbell's soup       |  0.080  0.569  0.010 |
+Colgate toothpaste    | -0.117  1.485  0.052 |
+Diet Coke             |  0.120  1.091  0.084 |
+Guess jeans           |  0.339  6.306  0.332 |
+Hallmark cards        |  0.187  3.697  0.110 |
+IBM computers         | -0.449 20.407  0.668 |
+
+Columns (the 10 first)
+                        Iner*1000    Dim.1    ctr   cos2    Dim.2    ctr   cos2
+Charme                |    21.917 | -0.117  0.715  0.033 | -0.418 12.087  0.420
+Alegria               |    23.790 |  0.418 11.557  0.494 | -0.008  0.006  0.000
+Ousadia               |    16.867 | -0.432  9.510  0.573 |  0.156  1.640  0.074
+Pés no chão           |    25.282 |  0.592 19.512  0.784 |  0.163  1.963  0.059
+Honestidade           |    11.628 |  0.353  7.632  0.667 | -0.100  0.809  0.053
+Imaginação            |    14.850 |  0.041  0.109  0.007 | -0.156  2.156  0.111
+Inteligência          |    20.739 | -0.203  2.686  0.132 | -0.260  5.854  0.215
+Ao ar livre           |    34.698 | -0.134  1.136  0.033 |  0.685 39.576  0.870
+Confiança             |     7.381 |  0.140  1.752  0.241 | -0.044  0.235  0.024
+Animação              |     7.879 | -0.210  2.491  0.321 |  0.183  2.526  0.244
+                         Dim.3    ctr   cos2  
+Charme                |  0.404 24.088  0.392 |
+Alegria               |  0.222  9.254  0.139 |
+Ousadia               |  0.238  8.230  0.174 |
+Pés no chão           |  0.073  0.850  0.012 |
+Honestidade           | -0.077  1.031  0.032 |
+Imaginação            | -0.050  0.472  0.011 |
+Inteligência          | -0.436 35.181  0.606 |
+Ao ar livre           |  0.094  1.600  0.016 |
+Confiança             | -0.152  5.937  0.287 |
+Animação              |  0.102  1.693  0.077 |</code></pre>
+</div>
+</div>
+</section><section id="proporção-da-variância-explicada" class="slide level2"><h2>Proporção da Variância Explicada</h2>
+<ul>
+<li><p>Como na análise de componentes principais, estamos interessados na proporção da variância explicada por cada dimensão calculada pela análise de correspondência.</p></li>
+<li><p>Novamente, podemos determinar o número de dimensões pelo <code>Scree Plot</code>, que é um gráfico das variâncias (autovalores) ordenadas.</p></li>
+<li><p>Vamos utilizar a função <code>fviz_screeplot</code> do pacote <code>factoextra</code> para gerar o scree plot.</p></li>
+</ul></section><section id="proporção-da-variância-explicada-1" class="slide level2"><h2>Proporção da Variância Explicada</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>factoextra<span class="sc">::</span><span class="fu">fviz_screeplot</span>(</span>
+<span id="cb7-2"><a href="#cb7-2"></a>  ac_resultado,</span>
+<span id="cb7-3"><a href="#cb7-3"></a>  <span class="at">choice =</span> <span class="st">"variance"</span>,</span>
+<span id="cb7-4"><a href="#cb7-4"></a>  <span class="at">addlabels =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb7-5"><a href="#cb7-5"></a>  <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">100</span>),</span>
+<span id="cb7-6"><a href="#cb7-6"></a>  <span class="at">main =</span> <span class="st">""</span>,</span>
+<span id="cb7-7"><a href="#cb7-7"></a>  <span class="at">ylab =</span> <span class="st">"Proporção da Variância Explicada"</span>,</span>
+<span id="cb7-8"><a href="#cb7-8"></a>  <span class="at">xlab =</span> <span class="st">"Dimensões"</span></span>
+<span id="cb7-9"><a href="#cb7-9"></a>)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+
+</section><section id="proporção-da-variância-explicada-1-output" class="slide level2 output-location-slide"><h2>Proporção da Variância Explicada</h2><div class="cell output-location-slide">
+<div class="cell-output-display">
+<p><img data-src="slides-25-10-23_files/figure-revealjs/unnamed-chunk-5-1.png" width="960"></p>
+</div>
+</div></section><section id="proporção-da-variância-explicada-2" class="slide level2 scrollable"><h2>Proporção da Variância Explicada</h2>
+<ul>
+<li><p>Observe que uma boa redução de dimensão é alcançada quando as primeiras dimensões representam uma grande proporção da variabilidade.</p></li>
+<li><p>Em nossa análise, as cinco primeiras dimensões explicam 90,6% da variação.</p></li>
+<li><p>O número de dimensões é determinado no ponto além do qual as variâncias restantes são todas relativamente pequenas.</p></li>
+<li><p>O ponto em que o Scree Plot forma um curva “cotovelo” pode ser considerado como indicando uma dimensionalidade ideal.</p></li>
+<li><p>Neste caso, 5 ou 6 dimensões seriam adequadas.</p></li>
+</ul></section><section id="biplot" class="slide level2"><h2>Biplot</h2>
+<ul>
+<li>Vamos utilizar a função <code>fviz_ca_biplot</code> do pacote <code>factoextra</code> para construir um biplot que exibe simultaneamente as variáveis/colunas (atributos) e os indivíduos/linhas (marcas)</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>factoextra<span class="sc">::</span><span class="fu">fviz_ca_biplot</span>(</span>
+<span id="cb8-2"><a href="#cb8-2"></a>  ac_resultado,</span>
+<span id="cb8-3"><a href="#cb8-3"></a>  <span class="at">label =</span> <span class="st">"all"</span>,</span>
+<span id="cb8-4"><a href="#cb8-4"></a>  <span class="at">col.var =</span> <span class="st">"orange"</span>,</span>
+<span id="cb8-5"><a href="#cb8-5"></a>  <span class="at">col.ind =</span> <span class="st">"blue"</span>,</span>
+<span id="cb8-6"><a href="#cb8-6"></a>  <span class="at">repel =</span> <span class="cn">TRUE</span></span>
+<span id="cb8-7"><a href="#cb8-7"></a>)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+
+</section><section id="biplot-output" class="slide level2 output-location-slide"><h2>Biplot</h2><div class="cell output-location-slide">
+<div class="cell-output-display">
+<p><img data-src="slides-25-10-23_files/figure-revealjs/unnamed-chunk-6-1.png" width="960"></p>
+</div>
+</div></section><section id="interpretação" class="slide level2"><h2>Interpretação</h2>
+<ul>
+<li><p>No canto inferior esquerdo, podemos ver que Calvin Klein, American Express, Apple e Lexus são associadas à <code>Classe alta</code>.</p></li>
+<li><p>Porsche mistura <code>Classe Alta</code> e <code>Ousadia</code>.</p></li>
+<li><p>No canto superior esquerdo, podemos ver que <code>Resistência</code> é compartilhada pela Nike, Reebok, Levi’s e Michelin, que também são um pouco associadas a atividades <code>Ao ar livre</code>.</p></li>
+</ul></section><section id="interpretação-1" class="slide level2"><h2>Interpretação</h2>
+<ul>
+<li><p>Uma dica importante para quem inicia o uso da análise de correspondência:</p></li>
+<li><p>Quanto mais próximo algo estiver do centro do mapa, menos distinto ele será.</p></li>
+<li><p>Assim, neste mapa, podemos ver que a marca Qantas é mal descrita por qualquer um dos atributos.</p></li>
+<li><p>Da mesma forma, <code>Bem-sucedido</code> e <code>Imaginativo</code> são atributos de personalidade que não são bons diferenciadores entre as marcas.</p></li>
+</ul></section><section id="interpretação-2" class="slide level2"><h2>Interpretação</h2>
+<ul>
+<li><p>Também podemos ver que uma espécie de continuum é evidente nos dados:</p></li>
+<li><p>Vai de <code>Classe alta</code> e <code>Inteligência</code> no canto inferior esquerdo, até <code>Alegria</code> e <code>Pés no chão</code> no canto superior direito.</p></li>
+</ul></section><section id="contribuição-das-linhasindivíduos" class="slide level2"><h2>Contribuição das linhas/indivíduos</h2>
+<ul>
+<li><p>A contribuição das linhas (em %) para a definição das dimensões pode ser extraída da seguinte seguinte:</p></li>
+<li><p>Contribuicoes das linhas para dimensao 1:</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>factoextra<span class="sc">::</span><span class="fu">fviz_contrib</span>(ac_resultado, <span class="at">choice =</span> <span class="st">"row"</span>, <span class="at">axes =</span> <span class="dv">1</span>, <span class="at">top =</span> <span class="dv">10</span>)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+
+</section><section id="contribuição-das-linhasindivíduos-output" class="slide level2 output-location-slide"><h2>Contribuição das linhas/indivíduos</h2><div class="cell output-location-slide">
+<div class="cell-output-display">
+<p><img data-src="slides-25-10-23_files/figure-revealjs/unnamed-chunk-7-1.png" width="960"></p>
+</div>
+</div></section><section id="contribuição-das-linhasindivíduos-1" class="slide level2"><h2>Contribuição das linhas/indivíduos</h2>
+<ul>
+<li>Contribuicoes das linhas para dimensao 2:</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>factoextra<span class="sc">::</span><span class="fu">fviz_contrib</span>(ac_resultado, <span class="at">choice =</span> <span class="st">"row"</span>, <span class="at">axes =</span> <span class="dv">2</span>, <span class="at">top =</span> <span class="dv">10</span>)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img data-src="slides-25-10-23_files/figure-revealjs/unnamed-chunk-8-1.png" width="960"></p>
+</div>
+</div>
+</section><section id="contribuição-das-linhasindivíduos-2" class="slide level2"><h2>Contribuição das linhas/indivíduos</h2>
+<ul>
+<li><p>As linhas que mais contribuem para Dim.1 e Dim.2 são as mais importantes para explicar a variabilidade no conjunto de dados.</p></li>
+<li><p>Linhas que não contribuem muito para nenhuma dimensão ou que contribuem para as últimas dimensões são menos importantes.</p></li>
+</ul></section><section id="análise-de-correspondência-dicas-de-interpretação" class="slide level2"><h2>Análise de Correspondência: Dicas de Interpretação</h2>
+<ol type="1">
+<li><p>Quanto mais longe as variáveis e indivíduos estão da origem, mais discriminativas elas são, provavelmente.</p></li>
+<li><p>Quanto mais próximas as variáveis e indivíduos estão da origem, menos distintas são, provavelmente.</p></li>
+<li><p>Quanto mais variação for explicada, menos insights serão perdidos, Por quê?.</p></li>
+<li><p>A proximidade entre as indivíduos provavelmente indica similaridade entre elas.</p></li>
+</ol></section><section id="análise-de-correspondência-dicas-de-interpretação-1" class="slide level2"><h2>Análise de Correspondência: Dicas de Interpretação</h2>
+<ol start="5" type="1">
+<li><p>A proximidade entre as variáveis provavelmente indica similaridade entre elas.</p></li>
+<li><p>A proximidade entre as variáveis e indivíduos provavelmente indica associação entre elas, e vice-versa.</p></li>
+</ol></section><section id="análise-de-correspondência-múltipla" class="slide level2"><h2>Análise de Correspondência Múltipla</h2>
+<ul>
+<li>Se a tabela de contingência envolve mais de duas variáveis categóricas, deve-se aplicar os métodos da Análise de Correspondência Múltipla.</li>
 </ul>
 <p><img src="img/logo.jpg" class="slide-logo"></p>
 <div class="footer footer-default">

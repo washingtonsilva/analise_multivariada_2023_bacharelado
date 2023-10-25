@@ -43,7 +43,7 @@ Também podemos examinar as variância das quatro variáveis usando a função `
 apply(USArrests, 2, var)
 ```
 
-Não surpreende que a variabilidade é muito diferentes.
+Não surpreende que a variabilidade muito diferente.
 
 A variável `UrbanPop` mede a porcentagem da população de cada estado que vive em área urbana, que não é um número comparável ao número de estupros
 em cada estado por 100.000 indivíduos.

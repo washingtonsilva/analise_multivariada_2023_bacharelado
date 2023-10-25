@@ -68,8 +68,8 @@ csl: associacao-brasileira-de-normas-tecnicas.csl
 
 - A Análise de Correspondência é uma das técnicas mais mágicas em análise de dados. 
 
-- Ela resume os padrões em uma tabela de dados em uma visualização conhecida 
-para nós: o biplot. 
+- Ela resume os padrões em uma (grande) tabela de dados 
+categóricos em gráficos que facilitam a interpretação: o biplot, é um deles. 
 
 - Considere a tabela de contingência no próximo slide. 
 
@@ -199,7 +199,8 @@ for verdadeira.
 
 - Os resíduos mostram as associações entre os variáveis nas linhas e nas colunas. 
 
-- Grandes resíduos positivos indicam uma forte associação positiva, e o oposto é verdadeiro para grandes resíduos negativos.
+- Grandes resíduos positivos indicam uma forte associação positiva, e o 
+oposto é verdadeiro para grandes resíduos negativos.
 
 
 ## Teste $\chi^2$ e Análise de Correspondência 
@@ -234,12 +235,223 @@ de personalidade no próximo slide
 
 ## Resíduos do Teste $\chi^2$ e Análise de Correspondência
 
-- Agora veja como as variáveis (colunas) da tabela são representadas no 
+- Agora veja como as variáveis (colunas) da tabela são representadas no
 biplot. 
 
 - Os resíduos dos atributos **pés no chão** e **alegria** tem tamanho parecido, e é por isso que estão próximos um do outro no mapa. 
 
 - A característica menos semelhante a **pés no chão** é **ousadia**, e é por isso que esses atributos estão em lados opostos do mapa.
+
+
+## Resíduos do Teste $\chi^2$ e Análise de Correspondência {.scrollable}
+
+- Agora observe a variancia explicada exibida nos eixos do biplot. 
+
+- A dimensão horizontal explica 34,4% da variação dos dados enquanto a dimensão vertical explica apenas 22,2%. 
+
+- A variância relativa explicada pelas dimensões é relavitivamente baixa, isso não é bom, ou seja, esse mapa não consta toda a 
+história da associação entre linhas e colunas.
+
+- Quanto maior a variância explicada pelas dimensões, mais completa 
+e mais precisas são as associacões e as interpretações.
+
+
+## Análise de Correspondência em R
+
+- O arquivo `brands_ac.rds` contém a tabela de contingência entre 
+`marcas` e `atributos de personalidade` das marcas exibida 
+anteriormente.
+
+- É um tipo muito comum de pesquisa de marketing.
+
+
+## Importando os dados {.scrollable}
+
+```{r}
+#| echo: true
+url <- "https://github.com/washingtonsilva/analise_multivariada_2023_bacharelado/raw/main/dados_clean/brands_ac.rds"
+brands_ac <- readr::read_rds(url)
+brands_ac
+```
+
+
+## Teste de $\chi^2$ {.scrollable}
+
+- Para interpretar a análise de correspondência, o primeiro passo é avaliar se há uma dependência significativa entre as linhas e colunas.
+
+- Um método formal é usar o teste de $\chi^2$ para examinar a associação entre variáveis de linha (marcas) e coluna (atributos):
+
+```{r}
+#| echo: true
+chisq.test(brands_ac)
+```
+
+- O valor-p é muito inferior a 0.05, o que fornece forte evidência de que 
+existe associação entre as marcas e os atributos de personalidade indicados pelos respondentes da pesquisa.
+
+
+## Análise de Correspondência {.scrollable}
+
+Vamos utilizar a função `CA` do pacote `factoMineR` para 
+executar a Análise de Correspondência:
+
+```{r}
+ac_resultado <- FactoMineR::CA(brands_ac, graph = FALSE)
+summary(ac_resultado)
+```
+
+
+## Proporção da Variância Explicada
+
+- Como na análise de componentes principais, estamos interessados na proporção da variância explicada por cada dimensão calculada pela análise de correspondência.
+
+- Novamente, podemos determinar o número de dimensões pelo `Scree Plot`, que é um gráfico das variâncias (autovalores) ordenadas.
+
+- Vamos utilizar a função `fviz_screeplot` do pacote `factoextra` para gerar o scree plot.
+
+
+## Proporção da Variância Explicada
+
+```{r}
+#| echo: true
+#| output-location: slide
+factoextra::fviz_screeplot(
+  ac_resultado,
+  choice = "variance",
+  addlabels = TRUE,
+  ylim = c(0, 100),
+  main = "",
+  ylab = "Proporção da Variância Explicada",
+  xlab = "Dimensões"
+)
+```
+
+
+## Proporção da Variância Explicada {.scrollable}
+
+- Observe que uma boa redução de dimensão é alcançada quando as primeiras dimensões representam uma grande proporção da variabilidade.
+
+- Em nossa análise, as cinco primeiras dimensões explicam 90,6% da variação.
+
+- O número de dimensões é determinado no ponto além do qual as variâncias restantes são todas relativamente pequenas.
+
+- O ponto em que o Scree Plot forma um curva “cotovelo” pode ser considerado como indicando uma dimensionalidade ideal. 
+
+- Neste caso, 5 ou 6 dimensões seriam adequadas.
+
+
+## Biplot
+
+- Vamos utilizar a função `fviz_ca_biplot` do pacote `factoextra` 
+para construir um biplot que exibe simultaneamente as 
+variáveis/colunas (atributos) e os indivíduos/linhas (marcas)
+
+```{r}
+#| echo: true
+#| output-location: slide
+factoextra::fviz_ca_biplot(
+  ac_resultado,
+  label = "all",
+  col.var = "orange",
+  col.ind = "blue",
+  repel = TRUE
+)
+```
+
+
+## Interpretação
+
+- No canto inferior esquerdo, podemos ver que Calvin Klein, American Express, Apple e Lexus são associadas à `Classe alta`. 
+
+- Porsche mistura `Classe Alta` e `Ousadia`. 
+
+- No canto superior esquerdo, podemos ver que `Resistência` é compartilhada 
+pela Nike, Reebok, Levi’s e Michelin, que também são um pouco associadas a atividades `Ao ar livre`.
+
+
+## Interpretação
+
+- Uma dica importante para quem inicia o uso da análise de correspondência: 
+
+- Quanto mais próximo algo estiver do centro do mapa, menos distinto ele será. 
+
+- Assim, neste mapa, podemos ver que a marca Qantas é mal descrita por qualquer um dos atributos. 
+
+- Da mesma forma, `Bem-sucedido` e `Imaginativo` são atributos de personalidade que não são bons diferenciadores entre as marcas.
+
+
+## Interpretação
+
+- Também podemos ver que uma espécie de continuum é evidente nos dados:
+
+- Vai de `Classe alta` e `Inteligência` no canto inferior esquerdo,
+até `Alegria` e `Pés no chão` no canto superior direito.
+
+
+## Contribuição das linhas/indivíduos
+
+- A contribuição das linhas (em %) para a definição das dimensões pode ser extraída da seguinte seguinte:
+
+- Contribuicoes das linhas para dimensao 1:
+
+```{r}
+#| echo: true
+#| output-location: slide
+factoextra::fviz_contrib(ac_resultado, choice = "row", axes = 1, top = 10)
+```
+
+
+## Contribuição das linhas/indivíduos
+
+- Contribuicoes das linhas para dimensao 2:
+
+```{r}
+#| echo: true
+factoextra::fviz_contrib(ac_resultado, choice = "row", axes = 2, top = 10)
+```
+
+
+## Contribuição das linhas/indivíduos
+
+- As linhas que mais contribuem para Dim.1 e Dim.2 são as mais importantes para explicar a variabilidade no conjunto de dados.
+
+- Linhas que não contribuem muito para nenhuma dimensão ou que contribuem para as últimas dimensões são menos importantes.
+
+
+## Análise de Correspondência: Dicas de Interpretação 
+
+1. Quanto mais longe as variáveis e indivíduos estão da origem, mais discriminativas elas são, provavelmente.
+
+2. Quanto mais próximas as variáveis e indivíduos estão da origem, menos distintas são, provavelmente.
+
+3. Quanto mais variação for explicada, menos insights serão perdidos, Por quê?.
+
+4. A proximidade entre as indivíduos provavelmente indica similaridade entre elas.
+
+
+## Análise de Correspondência: Dicas de Interpretação
+
+5. A proximidade entre as variáveis provavelmente indica similaridade entre elas.
+
+6. A proximidade entre as variáveis e indivíduos provavelmente indica associação entre elas, e vice-versa.
+
+
+## Análise de Correspondência Múltipla
+
+- Se a tabela de contingência envolve mais de duas 
+variáveis categóricas, deve-se aplicar os métodos da 
+Análise de Correspondência Múltipla.
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -1752,20 +1752,150 @@ display: none;
 
 
 <!-- rnb-text-begin -->
+<style type="text/css">
+body{
+font-size: 12pt;
+text-align: justify
+}
+</style>
 <div id="análise-de-correspondência-em-r" class="section level2">
 <h2>Análise de Correspondência em R</h2>
+</div>
+<div id="pacotes-necessários" class="section level2">
+<h2>1. Pacotes Necessários</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBzaW11bGF0ZSBub3JtYWwgcmFuZG9tIHZhcmlhdGVzXG5cblxuYGBgIn0= -->
-<pre class="r"><code># simulate normal random variates
-</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShoZXJlKSAgICMgcGFyYSB1c2FyIGhlcmUoKVxubGlicmFyeShyZWFkcikgICMgcGFyYSB1c2FyIHJlYWRfeGxzKClcbmxpYnJhcnkoRmFjdG9NaW5lUilcbmxpYnJhcnkoZmFjdG9leHRyYSlcbmBgYCJ9 -->
+<pre class="r"><code>library(here)   # para usar here()
+library(readr)  # para usar read_xls()
+library(FactoMineR)
+library(factoextra)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="importando-o-arquivo-de-dados" class="section level2">
+<h2>2. Importando o arquivo de dados</h2>
+<p>O objeto <code>brands_ac.rds</code> contém uma tabela de contingência
+entre duas variáveis categóricas: <code>marcas</code> e
+<code>atributos de personalidade</code> das marcas.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGF0aCA8LSBoZXJlKFwiZGFkb3NfY2xlYW5cIiwgXCJicmFuZHNfYWMucmRzXCIpXG5icmFuZHNfYWMgPC0gcmVhZHI6OnJlYWRfcmRzKHBhdGgpXG5oZWFkKGJyYW5kc19hYylcbmBgYCJ9 -->
+<pre class="r"><code>path &lt;- here(&quot;dados_clean&quot;, &quot;brands_ac.rds&quot;)
+brands_ac &lt;- readr::read_rds(path)
+head(brands_ac)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="testes-de-associação" class="section level2">
+<h2>Testes de Associação</h2>
+<p>Teste de Qui-Quadrado:</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY2hpc3EudGVzdChicmFuZHNfYWMpXG5gYGAifQ== -->
+<pre class="r"><code>chisq.test(brands_ac)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>O valor-p é praticamente zero, o que fornece forte evidência de que
+há associação entre as marcas e as facetas das marcas atribuídas pelos
+respondentes da pesquisa.</p>
+</div>
+<div id="analise-de-correspondencia-usando-o-pacote-factominer" class="section level2">
+<h2>Analise de Correspondencia usando o pacote FactoMineR</h2>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYWNfcmVzdWx0YWRvIDwtIEZhY3RvTWluZVI6OkNBKGJyYW5kc19hYywgZ3JhcGggPSBGQUxTRSlcbnN1bW1hcnkoYWNfcmVzdWx0YWRvKVxuYGBgIn0= -->
+<pre class="r"><code>ac_resultado &lt;- FactoMineR::CA(brands_ac, graph = FALSE)
+summary(ac_resultado)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Como podemos ver, objeto <code>ac_resultado</code>, criado pela
+função <code>FactoMineR::CA()</code> contém muitas informações
+armazendas em diversos objetos.</p>
+</div>
+<div id="visualização-e-interpretação" class="section level2">
+<h2>Visualização e Interpretação</h2>
+<p>Como na análise de componentes principais, estamos interessados na
+proporção da variância explicada por cada dimensão calculada pela
+análise de correspondência, que é uma medida da importância da dimensão
+para explicar a variabilidade total dos dados.</p>
+<p>Podemos extrair essa informação usando a função
+<code>get_eigenvalue()</code> do pacote <code>factoextra</code>:</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZmFjdG9leHRyYTo6Z2V0X2VpZ2VudmFsdWUoYWNfcmVzdWx0YWRvKVxuYGBgIn0= -->
+<pre class="r"><code>factoextra::get_eigenvalue(ac_resultado)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Observe que uma boa redução de dimensão é alcançada quando as
+primeiras dimensões representam uma grande proporção da
+variabilidade.</p>
+<p>Em nossa análise, as cinco primeiras dimensões explicam 90,6% da
+variação.</p>
+<p>Como na PCA, um método alternativo para determinar o número de
+dimensões é olhar para um <code>Scree Plot</code>, que é um gráfico das
+variâncias (autovalores) ordenadas da maior para a menor.</p>
+<p>O número de dimensões é determinado no ponto além do qual as
+variâncias restantes são todas relativamente pequenas.</p>
+<p>O ponto em que o Scree Plot forma um curva “cotovelo” pode ser
+considerado como indicando uma dimensionalidade ideal, no caso,
+confirmando que 5 dimensões são adequadas.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZnZpel9zY3JlZXBsb3QoYWNfcmVzdWx0YWRvLFxuICAgICAgICAgICAgICAgY2hvaWNlID0gXCJ2YXJpYW5jZVwiLFxuICAgICAgICAgICAgICAgYWRkbGFiZWxzID0gVFJVRSwgXG4gICAgICAgICAgICAgICB5bGltID0gYygwLCAxMDApLFxuICAgICAgICAgICAgICAgbWFpbiA9IFwiXCIsXG4gICAgICAgICAgICAgICB5bGFiID0gXCJQcm9wb3LDp8OjbyBkYSBWYXJpw6JuY2lhIEV4cGxpY2FkYVwiLFxuICAgICAgICAgICAgICAgeGxhYiA9IFwiRGltZW5zw7Vlc1wiKVxuYGBgIn0= -->
+<pre class="r"><code>fviz_screeplot(ac_resultado,
+               choice = &quot;variance&quot;,
+               addlabels = TRUE, 
+               ylim = c(0, 100),
+               main = &quot;&quot;,
+               ylab = &quot;Proporção da Variância Explicada&quot;,
+               xlab = &quot;Dimensões&quot;)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZnZpel9jYV9iaXBsb3QoYWNfcmVzdWx0YWRvLCBcbiAgICAgICAgICAgICAgICBsYWJlbCA9IFwiYWxsXCIsIFxuICAgICAgICAgICAgICAgIGNvbC52YXIgPSBcIm9yYW5nZVwiLFxuICAgICAgICAgICAgICAgIGNvbC5pbmQgPSBcImJsdWVcIiwsXG4gICAgICAgICAgICAgICAgcmVwZWwgPSBUUlVFKVxuYGBgIn0= -->
+<pre class="r"><code>fviz_ca_biplot(ac_resultado, 
+                label = &quot;all&quot;, 
+                col.var = &quot;orange&quot;,
+                col.ind = &quot;blue&quot;,,
+                repel = TRUE)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Embora o gráfico abaixo seja um pouco confuso, é muito mais fácil
+interpretá-lo do que a tabela.</p>
+<ul>
+<li><p>No canto inferior esquerdo, podemos ver que Calvin Klein,
+American Express, Apple e Lexus são associadas `a classe alta.</p></li>
+<li><p>Porsche mistura Classe Alta e Ousadia.</p></li>
+<li><p>No canto superior esquerdo, podemos ver que Resistência é
+compartilhada pela Nike, Reebok, Levi’s e Michelin, que também são um
+pouco associadas a atividades ao ar livre.</p></li>
+</ul>
+<p>Uma dica importante para quem inicia o uso da análise de
+correspondência:</p>
+<ul>
+<li><p>Quanto mais próximo algo estiver do centro do mapa, menos
+distinto ele será.</p></li>
+<li><p>Assim, neste mapa, podemos ver que a marca Qantas é mal descrita
+por qualquer um dos atributos de personalidade.</p></li>
+<li><p>Da mesma forma, Bem-sucedido e Imaginativo são atributos de
+personalidade que não são bons diferenciadores entre as marcas.</p></li>
+<li><p>Também podemos ver que uma espécie de continuum é evidente nos
+dados. Vai de classe alta e inteligente no canto inferior esquerdo, até
+alegre e pés no chão (realista) no canto superior direito.</p></li>
+</ul>
+<!-- rnb-text-end -->
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAnTGFiOiBBbsOhbGlzZSBkZSBDb3JyZXNwb25kw6puY2lhIGVtIFInCm91dHB1dDogaHRtbF9ub3RlYm9vawotLS0KCiMjIEFuw6FsaXNlIGRlIENvcnJlc3BvbmTDqm5jaWEgZW0gUgoKCmBgYHtyfQojIHNpbXVsYXRlIG5vcm1hbCByYW5kb20gdmFyaWF0ZXMKCgpgYGAKCg==</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAnTGFiOiBBbsOhbGlzZSBkZSBDb3JyZXNwb25kw6puY2lhIGVtIFInCm91dHB1dDogaHRtbF9ub3RlYm9vawotLS0KCjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+CiAgYm9keXsKICBmb250LXNpemU6IDEycHQ7CiAgdGV4dC1hbGlnbjoganVzdGlmeQogICAgICB9Cjwvc3R5bGU+CgoKIyMgQW7DoWxpc2UgZGUgQ29ycmVzcG9uZMOqbmNpYSBlbSBSCgojIyAxLiBQYWNvdGVzIE5lY2Vzc8OhcmlvcwoKYGBge3IsIHdhcm5pbmc9RkFMU0UsIG1lc3NhZ2U9RkFMU0V9CmxpYnJhcnkoaGVyZSkgICAjIHBhcmEgdXNhciBoZXJlKCkKbGlicmFyeShyZWFkcikgICMgcGFyYSB1c2FyIHJlYWRfeGxzKCkKbGlicmFyeShGYWN0b01pbmVSKQpsaWJyYXJ5KGZhY3RvZXh0cmEpCmBgYAoKCiMjIDIuIEltcG9ydGFuZG8gbyBhcnF1aXZvIGRlIGRhZG9zCgpPIG9iamV0byBgYnJhbmRzX2FjLnJkc2AgY29udMOpbSB1bWEgdGFiZWxhIGRlIGNvbnRpbmfDqm5jaWEgZW50cmUgCmR1YXMgdmFyacOhdmVpcyBjYXRlZ8OzcmljYXM6IGBtYXJjYXNgIGUgYGF0cmlidXRvcyBkZSBwZXJzb25hbGlkYWRlYCAKZGFzIG1hcmNhcy4gCgpgYGB7cn0KcGF0aCA8LSBoZXJlKCJkYWRvc19jbGVhbiIsICJicmFuZHNfYWMucmRzIikKYnJhbmRzX2FjIDwtIHJlYWRyOjpyZWFkX3JkcyhwYXRoKQpoZWFkKGJyYW5kc19hYykKYGBgCgoKIyMgVGVzdGVzIGRlIEFzc29jaWHDp8OjbyAKClRlc3RlIGRlIFF1aS1RdWFkcmFkbzoKCmBgYHtyfQpjaGlzcS50ZXN0KGJyYW5kc19hYykKYGBgCgpPIHZhbG9yLXAgw6kgcHJhdGljYW1lbnRlIHplcm8sIG8gcXVlIGZvcm5lY2UgZm9ydGUgZXZpZMOqbmNpYSBkZSBxdWUgCmjDoSBhc3NvY2lhw6fDo28gZW50cmUgYXMgbWFyY2FzIGUgYXMgZmFjZXRhcyBkYXMgbWFyY2FzIGF0cmlidcOtZGFzIHBlbG9zIApyZXNwb25kZW50ZXMgZGEgcGVzcXVpc2EuCgoKIyMgQW5hbGlzZSBkZSBDb3JyZXNwb25kZW5jaWEgdXNhbmRvIG8gcGFjb3RlIEZhY3RvTWluZVIKCmBgYHtyfQphY19yZXN1bHRhZG8gPC0gRmFjdG9NaW5lUjo6Q0EoYnJhbmRzX2FjLCBncmFwaCA9IEZBTFNFKQpzdW1tYXJ5KGFjX3Jlc3VsdGFkbykKYGBgCgpDb21vIHBvZGVtb3MgdmVyLCAgb2JqZXRvIGBhY19yZXN1bHRhZG9gLCBjcmlhZG8gcGVsYSBmdW7Dp8OjbyBgRmFjdG9NaW5lUjo6Q0EoKWAgY29udMOpbSBtdWl0YXMgaW5mb3JtYcOnw7VlcyBhcm1hemVuZGFzIGVtIGRpdmVyc29zIG9iamV0b3MuCgoKIyMgVmlzdWFsaXphw6fDo28gZSBJbnRlcnByZXRhw6fDo28KCkNvbW8gbmEgYW7DoWxpc2UgZGUgY29tcG9uZW50ZXMgcHJpbmNpcGFpcywgZXN0YW1vcyBpbnRlcmVzc2Fkb3MgbmEgCnByb3BvcsOnw6NvIGRhIHZhcmnDom5jaWEgZXhwbGljYWRhIHBvciBjYWRhIGRpbWVuc8OjbyBjYWxjdWxhZGEgcGVsYSAKYW7DoWxpc2UgZGUgY29ycmVzcG9uZMOqbmNpYSwgcXVlIMOpIHVtYSBtZWRpZGEgZGEgaW1wb3J0w6JuY2lhIGRhIApkaW1lbnPDo28gcGFyYSBleHBsaWNhciBhIHZhcmlhYmlsaWRhZGUgdG90YWwgZG9zIGRhZG9zLgoKUG9kZW1vcyBleHRyYWlyIGVzc2EgaW5mb3JtYcOnw6NvIHVzYW5kbyBhIGZ1bsOnw6NvIGBnZXRfZWlnZW52YWx1ZSgpYCBkbyAKcGFjb3RlIGBmYWN0b2V4dHJhYDoKCmBgYHtyfQpmYWN0b2V4dHJhOjpnZXRfZWlnZW52YWx1ZShhY19yZXN1bHRhZG8pCmBgYAoKT2JzZXJ2ZSBxdWUgdW1hIGJvYSByZWR1w6fDo28gZGUgZGltZW5zw6NvIMOpIGFsY2Fuw6dhZGEgcXVhbmRvIGFzIHByaW1laXJhcyBkaW1lbnPDtWVzIHJlcHJlc2VudGFtIHVtYSBncmFuZGUgcHJvcG9yw6fDo28gZGEgdmFyaWFiaWxpZGFkZS4KCkVtIG5vc3NhIGFuw6FsaXNlLCBhcyBjaW5jbyBwcmltZWlyYXMgZGltZW5zw7VlcyBleHBsaWNhbSA5MCw2JSBkYSB2YXJpYcOnw6NvLiAKCkNvbW8gbmEgUENBLCB1bSBtw6l0b2RvIGFsdGVybmF0aXZvIHBhcmEgZGV0ZXJtaW5hciBvIG7Dum1lcm8gZGUgZGltZW5zw7VlcyDDqSBvbGhhciBwYXJhIHVtIGBTY3JlZSBQbG90YCwgcXVlIMOpIHVtIGdyw6FmaWNvIGRhcyB2YXJpw6JuY2lhcyAoYXV0b3ZhbG9yZXMpIG9yZGVuYWRhcyBkYSBtYWlvciBwYXJhIGEgbWVub3IuIAoKTyBuw7ptZXJvIGRlIGRpbWVuc8O1ZXMgw6kgZGV0ZXJtaW5hZG8gbm8gcG9udG8gYWzDqW0gZG8gcXVhbCBhcyB2YXJpw6JuY2lhcyByZXN0YW50ZXMgc8OjbyB0b2RhcyByZWxhdGl2YW1lbnRlIHBlcXVlbmFzLgoKTyBwb250byBlbSBxdWUgbyBTY3JlZSBQbG90IGZvcm1hIHVtIGN1cnZhIOKAnGNvdG92ZWxv4oCdIHBvZGUgc2VyIGNvbnNpZGVyYWRvIGNvbW8gaW5kaWNhbmRvIHVtYSBkaW1lbnNpb25hbGlkYWRlIGlkZWFsLCBubyBjYXNvLCBjb25maXJtYW5kbyBxdWUgNSBkaW1lbnPDtWVzIHPDo28gYWRlcXVhZGFzLgoKYGBge3J9CmZ2aXpfc2NyZWVwbG90KGFjX3Jlc3VsdGFkbywKICAgICAgICAgICAgICAgY2hvaWNlID0gInZhcmlhbmNlIiwKICAgICAgICAgICAgICAgYWRkbGFiZWxzID0gVFJVRSwgCiAgICAgICAgICAgICAgIHlsaW0gPSBjKDAsIDEwMCksCiAgICAgICAgICAgICAgIG1haW4gPSAiIiwKICAgICAgICAgICAgICAgeWxhYiA9ICJQcm9wb3LDp8OjbyBkYSBWYXJpw6JuY2lhIEV4cGxpY2FkYSIsCiAgICAgICAgICAgICAgIHhsYWIgPSAiRGltZW5zw7VlcyIpCmBgYAoKCgpgYGB7cn0KZnZpel9jYV9iaXBsb3QoYWNfcmVzdWx0YWRvLCAKICAgICAgICAgICAgICAgIGxhYmVsID0gImFsbCIsIAogICAgICAgICAgICAgICAgY29sLnZhciA9ICJvcmFuZ2UiLAogICAgICAgICAgICAgICAgY29sLmluZCA9ICJibHVlIiwsCiAgICAgICAgICAgICAgICByZXBlbCA9IFRSVUUpCmBgYAoKCkVtYm9yYSBvIGdyw6FmaWNvIGFiYWl4byBzZWphIHVtIHBvdWNvIGNvbmZ1c28sIMOpIG11aXRvIG1haXMgZsOhY2lsIAppbnRlcnByZXTDoS1sbyBkbyBxdWUgYSB0YWJlbGEuIAoKLSBObyBjYW50byBpbmZlcmlvciBlc3F1ZXJkbywgcG9kZW1vcyB2ZXIgcXVlIENhbHZpbiBLbGVpbiwgQW1lcmljYW4gRXhwcmVzcywgQXBwbGUgZSBMZXh1cyBzw6NvIGFzc29jaWFkYXMgYGEgY2xhc3NlIGFsdGEuIAoKLSBQb3JzY2hlIG1pc3R1cmEgQ2xhc3NlIEFsdGEgZSBPdXNhZGlhLiAKCi0gTm8gY2FudG8gc3VwZXJpb3IgZXNxdWVyZG8sIHBvZGVtb3MgdmVyIHF1ZSBSZXNpc3TDqm5jaWEgw6kgY29tcGFydGlsaGFkYSBwZWxhIE5pa2UsIFJlZWJvaywgTGV2aeKAmXMgZSBNaWNoZWxpbiwgcXVlIHRhbWLDqW0gc8OjbyB1bSBwb3VjbyBhc3NvY2lhZGFzIGEgCmF0aXZpZGFkZXMgYW8gYXIgbGl2cmUuCgpVbWEgZGljYSBpbXBvcnRhbnRlIHBhcmEgcXVlbSBpbmljaWEgbyB1c28gZGEgYW7DoWxpc2UgZGUgY29ycmVzcG9uZMOqbmNpYTogCgotIFF1YW50byBtYWlzIHByw7N4aW1vIGFsZ28gZXN0aXZlciBkbyBjZW50cm8gZG8gbWFwYSwgbWVub3MgZGlzdGludG8gZWxlIHNlcsOhLiAKCi0gQXNzaW0sIG5lc3RlIG1hcGEsIHBvZGVtb3MgdmVyIHF1ZSBhIG1hcmNhIFFhbnRhcyDDqSBtYWwgZGVzY3JpdGEgcG9yIHF1YWxxdWVyIAp1bSBkb3MgYXRyaWJ1dG9zIGRlIHBlcnNvbmFsaWRhZGUuIAoKLSBEYSBtZXNtYSBmb3JtYSwgQmVtLXN1Y2VkaWRvIGUgSW1hZ2luYXRpdm8gc8OjbyBhdHJpYnV0b3MgZGUgcGVyc29uYWxpZGFkZSAKcXVlIG7Do28gc8OjbyBib25zIGRpZmVyZW5jaWFkb3JlcyBlbnRyZSBhcyBtYXJjYXMuIAoKLSBUYW1iw6ltIHBvZGVtb3MgdmVyIHF1ZSB1bWEgZXNww6ljaWUgZGUgY29udGludXVtIMOpIGV2aWRlbnRlIG5vcyBkYWRvcy4gVmFpIGRlIGNsYXNzZSBhbHRhIGUgaW50ZWxpZ2VudGUgbm8gY2FudG8gaW5mZXJpb3IgZXNxdWVyZG8sIGF0w6kgYWxlZ3JlIGUgcMOpcyBubyAKY2jDo28gKHJlYWxpc3RhKSBubyBjYW50byBzdXBlcmlvciBkaXJlaXRvLgoKCgoKCg==</div>
 
 
 

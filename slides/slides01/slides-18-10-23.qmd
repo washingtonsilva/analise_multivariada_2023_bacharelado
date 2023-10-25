@@ -34,7 +34,7 @@ csl: associacao-brasileira-de-normas-tecnicas.csl
 
 - A sala virtual da disciplina está disponível no AVA (Moodle) do IFMG:
 
-    - [https://ead.ifmg.edu.br/formiga/](https://ead.ifmg.edu.br/formiga/)
+    - [https://ead.ifmg.edu.br/formiga/](https://ead.ifmg.edu.br/formiga/){target="_blank"}
 
 - Para acessar a sala, utilizem os mesmos usuário/e-mail e senha que 
 utilizam para acessar o sistema acadêmico [Meu IFMG](https://meu.ifmg.edu.br/Corpore.Net/Login.aspx)
