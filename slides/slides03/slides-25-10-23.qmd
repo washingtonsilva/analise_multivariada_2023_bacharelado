@@ -11,10 +11,10 @@ format:
     auto-stretch: false
     slide-number: true
     progress: true
-    incremental: false
+    incremental: true
     transition: slide
     code-link: true
-    self-contained: false
+    self-contained: true
     preview-links: false
     chalkboard: false
     overview: true
@@ -64,7 +64,7 @@ csl: associacao-brasileira-de-normas-tecnicas.csl
 - Vamos criar juntos o R Notebook para esta aula.
 
 
-## Análise de Correspondência: Motivação
+## Análise de Correspondência: Motivação {.scrollable}
 
 - A Análise de Correspondência é uma das técnicas mais mágicas em análise de dados. 
 
@@ -219,7 +219,7 @@ de personalidade no próximo slide
 ![biplot da Análise de Correspondência](img/biplot_orig.jpeg){#fig-biorig width=60% fig-align="center"}
 
 
-## Resíduos do Teste $\chi^2$ e Análise de Correspondência
+## Resíduos do Teste $\chi^2$ e Análise de Correspondência {.scrollable}
 
 - Compare os resíduos da Mercedz, American Express: 
 
