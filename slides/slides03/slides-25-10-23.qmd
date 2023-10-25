@@ -1,0 +1,249 @@
+---
+title: "Análise Multivariada"
+subtitle: "Análise de Correspondência"
+author: "Prof. Washington Santos da Silva"
+institute: "IFMG - Campus Formiga"
+date: today
+date-format: long
+lang: "pt"
+format: 
+  revealjs:
+    auto-stretch: false
+    slide-number: true
+    progress: true
+    incremental: false
+    transition: slide
+    code-link: true
+    self-contained: false
+    preview-links: false
+    chalkboard: false
+    overview: true
+    logo: img/logo.jpg
+    css: logo.css
+editor: source
+crossref:
+  fig-title: '**Fig.**'
+  fig-labels: arabic
+  title-delim: "**.**"
+execute: 
+  echo: true
+bibliography: referencias.bib
+csl: associacao-brasileira-de-normas-tecnicas.csl
+---
+
+## Ambiente Virtual de Aprendizagem
+
+- Lembre-se que a sala virtual da disciplina está disponível no AVA (Moodle) do IFMG:
+
+    - [https://ead.ifmg.edu.br/formiga/](https://ead.ifmg.edu.br/formiga/)
+
+
+
+## Summário: Aula em 25/10 
+
+- Motivação da Análise de Correspondência
+- Tabela de Contingência
+- Teste de Qui-Quadrado de Associação entre Variáveis Categóricas
+- Análise de Correspondência em R
+
+    
+    
+## R Notebook
+
+- Por favor criem um R Notebook no RStudio e o nomeiem como `analise_correspondencia.Rmd`
+
+- Você pode criar um novo notebook no RStudio usando o menu principal: 
+
+    - `File -> New File -> R Notebook`
+    
+- Trechos de código podem ser inseridos usando o seguinte atalho do teclado: 
+
+    - Ctrl + Alt + I (Windows/Linux) 
+    - or pelo menu `Insert a new code chunk`.
+    
+- Vamos criar juntos o R Notebook para esta aula.
+
+
+## Análise de Correspondência: Motivação
+
+- A Análise de Correspondência é uma das técnicas mais mágicas em análise de dados. 
+
+- Ela resume os padrões em uma tabela de dados em uma visualização conhecida 
+para nós: o biplot. 
+
+- Considere a tabela de contingência no próximo slide. 
+
+- É uma grande tabela composta por 42 linhas, cada uma representando uma marca diferente, e 15 colunas representando atributos das marcas.
+
+    - O que você pode ver? Nada salta à vista. 
+    - É necessário esforço para encontrar um padrão.
+
+
+## Dados
+
+![Marcas x Atributos de Personalidade](img/brands.jpeg){#fig-brands width=35% fig-align="center"}
+
+
+## Visualizacão da Análise de Correspondência
+
+![biplot da Análise de Correspondência](img/biplot_orig.jpeg){#fig-biorig width=40% fig-align="center"}
+
+::: footer
+Embora o gráfico seja um pouco confuso para um iniciante, ele é, como veremos, muito mais fácil de interpretar do que a tabela.
+
+:::
+
+
+## Tabela de Contingência
+
+- Uma tabela de contingência é uma ferramenta fundamental na análise de 
+  dados categóricos.
+
+- É usada para organizar e resumir dados categóricos em um formato tabular.
+
+- A tabela de contingência é composta por linhas e colunas.
+
+- As linhas representam uma variável categórica.
+
+- As colunas representam outra variável categórica.
+
+
+## Tabela de Contingência
+
+- Suponha que temos dados sobre a preferência alimentar de 100 pessoas.
+
+- E queremos analisar as preferências das pessoas entre frutas e legumes.
+
+- Uma tabela de contingência para este estudo seria a Tabela do 
+próximo slide.
+
+
+## Tabela de Contingência
+
+```{r}
+#| echo: false
+
+library(gtsummary)
+
+set.seed(123)
+data <- data.frame(
+  Sexo = c(sample(c("Masculino", "Feminino"), 100, replace = TRUE)),
+  Preferencia = c(sample(c("Frutas", "Legumes"), 100, replace = TRUE))
+)
+
+tabela_contingencia <- table(data)
+
+data %>%
+  tbl_cross(
+    row = Sexo,
+    col = Preferencia,
+    percent = "cell"
+  )
+```
+
+
+## Usos de Tabelas de Contingência
+
+- Teste de Qui-Quadrado para Independência.
+
+- Análise de Correspondência.
+
+- Isto é, tabelas de continência são um insumo básico para a análise de associações entre variáveis categóricas.
+
+
+## Teste Qui-Quadrado de Associação
+
+$$
+\chi^2 = \sum \frac{(O_{ij} - E_{ij})^2}{E_{ij}}
+$$
+
+sendo: 
+
+- $\chi^2$ a estatística de teste qui-quadrado.
+
+- $O_{ij}$ a frequência observada na célula $(i, j)$.
+
+
+
+- $E_{ij}$ a frequência esperada na célula (i, j).
+
+
+## Teste Qui-Quadrado de Associação {.scrollable}
+
+- **Passo 1**: Calcula-se as médias das linhas e das colunas
+
+- **Passo 2**: Calcula-se a frequência esperada de cada célula da tabela:
+
+- **Passo 3**: Calcula-se a estatística  $\chi^2$, que é a soma ao quadrado dos resíduos divividas pelas frequências esperadas de cada célula
+
+- **Passo 4**: Calcula-se e interpreta-se o valor-p do teste, que é a 
+probabilidade de observarmos o valor calculado de $\chi^2$ se 
+a hipótese nula de ausência de associação entre linhas e colunas 
+for verdadeira.
+
+- Regra de decisão alterantiva:
+
+   - $valor-p < 0.05$, os dados fornecem evidência de que **há** associação 
+   entre as linhas e colunas.
+   
+   - $valor-p > 0.05$, os dados fornecem evidência de que **não há** 
+   associação entre as linhas e colunas.
+
+
+
+## Teste Qui-Quadrado de Associação    
+   
+- Os resíduos são calculados subtraindo os valores esperados dos dados originais. 
+
+- Esses resíduos estão no centro da Análise de Correspondência.
+
+- Os resíduos mostram as associações entre os variáveis nas linhas e nas colunas. 
+
+- Grandes resíduos positivos indicam uma forte associação positiva, e o oposto é verdadeiro para grandes resíduos negativos.
+
+
+## Teste $\chi^2$ e Análise de Correspondência 
+
+- Em Análise de Correspondência temos o passo 5:
+
+- Passo 5: Plotar variáveis/indivíduos com resíduos semelhantes 
+próxima(o)s uns dos outros.
+
+- Vejamos novamente o biplot dos dados sobre as marcas e atributos 
+de personalidade no próximo slide
+
+
+## Resíduos do Teste $\chi^2$ e Análise de Correspondência 
+
+![biplot da Análise de Correspondência](img/biplot_orig.jpeg){#fig-biorig width=60% fig-align="center"}
+
+
+## Resíduos do Teste $\chi^2$ e Análise de Correspondência
+
+- Compare os resíduos da Mercedz, American Express: 
+
+    - Embora os resíduos da American Express sejam geralmente um pouco maiores, estão na mesma direção os resíduos da Mercedz. 
+ 
+    - É possível perceber que, em termos de resíduos, American Express e 
+    Mercedz são muito semelhantes.
+
+- O mesmo raciocíno vale para Apple e Porcsh.
+
+- A posição relativa das demais empresa no gráfico é consistente com as semelhanças de seus respectivos resíduos.
+
+
+## Resíduos do Teste $\chi^2$ e Análise de Correspondência
+
+- Agora veja como as variáveis (colunas) da tabela são representadas no 
+biplot. 
+
+- Os resíduos dos atributos **pés no chão** e **alegria** tem tamanho parecido, e é por isso que estão próximos um do outro no mapa. 
+
+- A característica menos semelhante a **pés no chão** é **ousadia**, e é por isso que esses atributos estão em lados opostos do mapa.
+
+
+
+
+
+
+
