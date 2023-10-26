@@ -1,0 +1,146 @@
+---
+title: "Exercício 1"
+subtitle: "Disciplina: Análise Multivariada - Bacharelado em Administração"
+author: Prof. Washington S. da Silva 
+format:
+  html:
+    embed-resources: true
+    toc: true
+    code-copy: true
+    css: styles.css
+lang: "pt"
+date: today
+execute: 
+  warning: false
+  message: false
+---
+
+## Introdução
+
+Os conjuntos de dados de marketing geralmente têm muitas variáveis – muitas dimensões – e é vantajoso reduzi-los a conjuntos menores de variáveis a serem analisadas. Por exemplo, podemos ter muitos itens em uma pesquisa com consumidores que refletem um número menor de conceitos subjacentes, como a satisfação do cliente com um serviço, a liderança de categoria para uma marca ou o luxo para um produto. Se pudermos reduzir os dados às suas dimensões subjacentes, podemos identificar mais claramente as relações subjacentes 
+entre os conceitos.
+
+Em marketing, a Análise de Componentes Principais é frequentemente 
+associada a **mapas perceptivos** (*perceptual maps*), que são 
+visualizações das associações dos entrevistados entre marcas ou produtos.
+
+Considerem que vocês sejam analistas trabalhando em um departamento de marketing e que vocês precisam analisar um conjunto de dados típico de pesquisas de **percepção de marcas** (*brand perception surveys*). 
+
+Esses dados refletem as avaliações dos consumidores sobre as marcas em relação aos adjetivos ou atributos perceptivos expressos nas questões da pesquisa. Uma questão desse tipo de pesquisa possui, em geral, a seguinte forma:
+
+*Em uma escala de 1 a 10 – onde 1 é o mínimo e 10 é o máximo – quão [ADJETIVO ou ATRIBUTO] é a [MARCA A]?*
+
+Nos dados produzidas por este tipo de pesquisa, uma observação (linha) é a avaliação que um entrevistado faz de uma marca em um dos adjetivos. Dois exemplos de questões deste tipo são:
+
+1. Quão moderno é o Café Dona Maria?
+
+2. Quão líder de categoria é o Café Três Coracões?
+
+Essas classificações são coletadas para todas as combinações de 
+adjetivos e marcas de interesse.
+
+O arquivo de dados que vocês importarão compreende classificações 
+simuladas de 10 marcas (*brands*) (`a` a `j`) em 9 adjetivos (`performance`, 
+`leader`, `latest`, `fun` e assim por diante), para $N = 100$ 
+entrevistados.
+
+
+## Questões
+
+### 1. Importação dos Dados
+
+1.1 Utilizando a funcão `read_csv()` do pacote `readr`. Importe o 
+arquivo de dados que está disponível na seguinte url e nomeie o 
+objeto que vai receber os dados como `percepcao_marcas`:
+
+```{r}
+#| eval: false
+url <- "http://goo.gl/IQl8nc"
+```
+
+1.2 Cada um dos 100 entrevistados simulados fez avaliações sobre 
+cada uma das 10 marcas, portanto, há um total de 1.000 linhas e 
+10 colunas. Verifique a estrutra do objeto `percepcao_marcas` 
+usando a funcão glimpse do pacote `dplyr` e verifique se os dados 
+importados são consistentes com as informações acima.
+
+
+3. Como você traduziria os 10 adjetivos usados para avaliar as marcas?
+
+
+### 2. Preparação dos Dados
+
+2.1 Os atributos (ou adjetivos) das marcas foram avaliados pelos 
+consumidores usando uma escala de números inteiros de 1 a 10, e a 
+melhor estrutura de dados da linguagem R para armzenar a coluna `brand` 
+que contém os nomes das marcas é `factor`. 
+
+Assim, podemos utilizar as funções `mutate` e `across` do pacote `dplyr` para 
+converter as variáveis `perform`, `leader`, `latest`, `fun`, `serious`, `bargain`, `value`, `trendy` e `rebuy` para o tipo `integer` e a 
+variável `brand` para o tipo `brand`. 
+
+Armazenaremos os dados transformados no objeto `percepcao_df`:
+
+```{r}
+#| eval: false
+percepcao_df <- percepcao_marcas %>%
+  dplyr::mutate(across(1:9, as.integer),
+                across(10, as.factor))  
+```
+
+Verifique se a transformação foi bem sucedida usando função `glimpse()` do pacote `dplyr` no objeto `percepcao_df`.
+
+
+### 3. Análise Exploratória dos Dados
+
+3.1 Podemos usar a funcão corrplot do pacote `corrplot` para explorar a 
+correlação bivariada entre as variáveis. 
+
+Veja que utlizamos apenas as colunas de 1 a 9 da data frame, pois 
+a décima coluna contém apenas os nomes das marcas:
+
+```{r}
+#| eval: false
+corrplot::corrplot(cor(percepcao_df[ , 1:9]) , order = "hclust")
+```
+
+o argumento `order="hclust"` reordena as linhas e colunas de acordo com a similaridade das variáveis em clusters obtidos pelo método hierárquico. 
+
+O que você conclui observando este gráfico de correlações: Há correlações 
+relevantes entre as variáveis (avaliações dadas pelos consumidores às 
+marcas)? Você consegue visualizar os clusters formados? Quantos e quais 
+são?
+
+
+### 4. Análise de Componentes Principais
+
+4.1 Utilizando os dados `percepcao_df`, daça uma análise de componentes principais usando a função `PCA()` do pacote `FactoMineR` e armazene os resultados no objeto `marcas_pca`. Utilize os argumentos `scale.unit = TRUE`, `graph = F`, qual o valor você deve estabelecer para o argumento `ncp`?
+
+4.2 Utilizando o objeto `marcas_pca` e a função `fviz_screeplot()` do 
+pacote `factoextra`, faça um Scree Plot. Considerando esse gráfico, 
+quantos componentes você considera suficientes para explicar a variação 
+total dos cados?
+
+4.3 Utilize a função `fviz_pca_var()` do pacote `factoextra` para 
+criar um  biplot das variáveis, isto é, dos atributos/adjetivos 
+atribuídos pelos entrevistados as marcas. Há algum padrão relevante? 
+Explique.
+
+4.4 Utilize a função `fviz_pca_var()` do pacote `factoextra` para criar 
+um biplot dos indivíduos, isto é, das marcas avaliadas. Há algum padrão relevante? Explique.
+
+4.5 Utilizando a função `fviz_pca_biplot` do pacote `factoextra` 
+crie um biplot contendo as variáveis e os indivíduos. Analise o 
+resultado desta pesquisa simulada de *percepção de marcas*.
+
+
+
+
+
+
+
+
+
+
+
+
