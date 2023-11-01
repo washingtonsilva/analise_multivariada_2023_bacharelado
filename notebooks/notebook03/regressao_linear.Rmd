@@ -1,6 +1,6 @@
 ---
-title: "Exercício/Tutorial: Modelos de Regressão Linear em R"
-author: "Washington Santos da Silva"
+title: "Modelos de Regressão Linear em R"
+author: "Prof. Washington Santos da Silva"
 output: html_notebook
 ---
 
@@ -39,7 +39,7 @@ Adicione um novo pedaço de código R clicando no botão
 
 ```{r setup}
 library(readr)  # para usarmos read_csv()
-library(dplyr). # para usarmos glimpse()
+library(dplyr)  # para usarmos glimpse()
 ```
 
 
@@ -71,24 +71,24 @@ plot(y ~ x, data = d)
 - y é completamente determinado por x ($y = 10 + 5x$)
 
 Agora vamos adicionar algum "ruído" aos nossos dados adicionando 
-valores (pseudo) aleatórios de uma distribuição Normal com 
+valores (pseudo)aleatórios de uma distribuição Normal com 
 média = 0 e desvio padrão = 10.
 
 A função `rnorm()` nos permite extrair valores aleatórios de uma 
 distribuição Normal.
 
 O comando `set.seed(1)` garante que todos geremos os mesmos 
-dados "aleatórios":
+dados (pseudo)aleatórios:
 
 ```{r}
-set.seed(123)
+set.seed(1)
 erro <- rnorm(n = 25, mean = 0, sd = 10)
 # Adiciona erro aleatorio a 10 + 5*x e refaz o grafico de dispersao
 d$y <- 10 + 5*x + erro
 plot(y ~ x, data = d)
 ```
 
-Agora y parece estar _associado_ a x, mas não completamente 
+Agora y parece estar _correlacionado_ a x, mas não completamente 
 determinado por x.
 
 y é a combinação de uma parte fixa e uma parte aleatória:
@@ -149,7 +149,6 @@ Em seguida, visualizamos os resultados do modelo usando
 ```{r}
 modelo_simulado <- lm(y ~ x, data = d)
 summary(modelo_simulado)
-
 ```
 
 O modelo retorna as seguintes estimativas:
@@ -202,6 +201,26 @@ predict(
 )
 ```
 
+Agora vamos obter a previsão, fazendo `interval = "prediction"`, veja 
+que o intervalo é muito mais amplo, porque a incerteza é muito maior:
+
+```{r}
+predict(
+  modelo_simulado,
+  newdata = data.frame(x = 10),
+  level = 0.95,
+  interval = "prediction"
+)
+```
+
+A diferença entre as duas previsões é explicada pelo seguinte. A previsão obtida com o intervalo de confiança fornece um intervalo de valores onde esperamos que a **média** de Y esteja com base nos dados da amostra.
+
+O intervalo de previsão, por outro lado, é usado para estimar um intervalo em que uma observação individual futura de Y estará com um certo nível de confiança. O intervalo é mais amplo do que o intervalo de confiança, pois 
+também leva em consideração a variabilidade do erro aleatório além da variabilidade dos parâmetros estimados.
+
+Em termos práticos, o intervalo de previsão é mais e útil quando estamos interessados em fazer previsões individuais, enquanto o intervalo 
+de confiança é mais útil quando estamos interessados na média da variável preditora. Ambos os intervalos são importantes em diferentes contextos, e a escolha entre eles depende das necessidades específicas de sua análise.
+
 A média esperada (condicional) de y quando x = 10 é de cerca de 
 61,6 com um IC de 95% de (57,2, 65,9). O IC nos dá uma noção de 
 quão incerta é essa média esperada. Na verdade, seria melhor relatar 
@@ -212,7 +231,7 @@ Poderíamos também tentar resumir a relação entre y e x examinando
 os extrair os parâmetros do sumário usando a função `coef()`:
 
 ```{r}
-coef(summary(mod_sim))
+coef(summary(modelo_simulado))
 ```
 
 O coeficiente x diz que y aumenta cerca de 5 unidades para cada 
@@ -358,6 +377,7 @@ valor de amostra é gerado usando nossos valores observados para `finsqft`, `bed
 
 ```{r}
 sim1 <- simulate(m1, nsim = 50)
+dplyr::glimpse(sim1)
 ```
 
 
@@ -397,20 +417,20 @@ plot(m1)
 
 Como interpretar os gráficos:
 
-1. Resíduos vs Valores Ajustados: deve possuir uma linha horizontal com 
+1. **Residuals vs Fitted**: deve possuir uma linha horizontal com 
 dispersão uniforme e simétrica dos pontos; se não, haverá evidência de 
 que a variância ou desvio-padrão não é constante.
 
-2. QQ normal: os pontos devem ficar próximos à linha diagonal; caso contrário, haverá evidência de que o resíduo não segue, aproximadamente, 
-uma distribuição n=Normal.
+2. **Q-Q Residuals**: os pontos devem ficar próximos à linha diagonal; caso contrário, haverá evidência de que o resíduo não segue, aproximadamente, uma distribuição n=Normal.
 
-3. Scale-Location: deve ter uma linha horizontal com dispersão uniforme de 
+3. **Scale-Location**: deve ter uma linha horizontal com dispersão uniforme de 
 pontos; (semelhante ao nº 1, mas mais fácil de detectar tendência na dispersão).
 
-4. Residuais vs Alavancagem: pontos fora das curvas de nível são observações influentes. Alavancagem é a distância do centro de todos os preditores. Uma observação com alta alavancagem tem influência substancial no valor ajustado.
+4. **Residuals vs Leverage**: pontos fora das curvas de nível são observações influentes. Alavancagem é a distância do centro de todos os preditores. Uma observação com alta alavancagem tem influência substancial no valor ajustado.
 
 Por padrão, os 3 pontos "mais extremos" são rotulados pelo número da linha. 
-2658 aparece em todos as quatro gráficos. É uma casa muito grande e cara.
+A observação (linha) 2658 aparece em todos as quatro gráficos. É uma casa 
+muito grande e cara.
 
 ```{r}
 homes[2658,]
