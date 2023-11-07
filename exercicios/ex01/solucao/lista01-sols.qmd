@@ -1,0 +1,216 @@
+---
+title: "Lista de Exercícios 1 - Resolução"
+subtitle: "Análise Multivariada"
+author: "Prof. Dr. Washington S. da Silva"
+title-block-banner: "#27445C"
+format:
+  html:
+    embed-resources: true
+    toc: true
+    toc-location: left
+    code-copy: true
+    css: styles.css
+lang: "pt"
+date: today
+execute: 
+  warning: false
+  message: false
+---
+
+
+## Questão 1
+
+
+### 1.1 
+
+Utilizando a funcão `read_csv()` do pacote `readr`. Importe o 
+arquivo de dados que está disponível na seguinte url e nomeie o 
+objeto que vai receber os dados como `percepcao_marcas`.
+
+::: {.callout-tip}
+## Solução
+
+```{r}
+#| echo: true
+
+url <- "http://goo.gl/IQl8nc"
+percepcao_marcas <- readr::read_csv(url)
+```
+:::
+
+
+
+
+### 1.2
+
+Verifique a estrutra do objeto `percepcao_marcas` usando a funcão glimpse 
+do pacote `dplyr` e verifique se os dados importados são consistentes com 
+as informações.
+
+::: {.callout-tip}
+## Solução
+
+```{r}
+#| echo: true
+
+dplyr::glimpse(percepcao_marcas)
+```
+:::
+
+
+### 1.3
+
+Como você traduziria os 10 adjetivos usados para avaliar as marcas?
+
+::: {.callout-tip}
+## Solução
+
+| adjetivo    |   tradução          |
+|:-----------:|:------------------:|
+| *perform*   | desempenho         |
+| *leader*    | líder              |
+| *latest*    | atualizada         |
+| *fun*       | diversão           |
+| *serious*   | séria              |
+| *bargain*   | barata             |
+| *value*     | valor              |
+| *trendy*    | última moda        |
+| *rebuy*     | comprar novamente  |
+| *brand*     | qualidade          |
+:::
+
+
+## Questão 2
+
+### 2.1
+
+Podemos utilizar as funções mutate e across do pacote dplyr para converter as variáveis `perform`, `leader`, `latest`, `fun`, `serious`, `bargain`, `value`, `trendy` e `rebuy` para o tipo `integer` e a variável `brand` para o tipo 
+`factor`. Verifique se a transformação foi bem sucedida usando 
+função `glimpse()` do pacote dplyr no objeto `percepcao_df`.
+
+::: {.callout-tip}
+## Solução
+
+```{r}
+percepcao_df <- percepcao_marcas |>
+  dplyr::mutate(across(1:9, as.integer),
+                across(10, as.factor))
+
+dplyr::glimpse(percepcao_df)
+```
+:::
+
+
+## Questão 3
+
+### 3.1
+
+Podemos usar a funcão corrplot do pacote corrplot para explorar a correlação bivariada entre as variáveis. O que você conclui observando este gráfico de correlações: Há correlações relevantes entre as variáveis (avaliações dadas 
+pelos consumidores às marcas)? Você consegue visualizar os clusters formados? Quantos e quais são?
+
+::: {.callout-tip}
+## Solução
+
+```{r}
+corrplot::corrplot(cor(percepcao_df[ , 1:9]) , order = "hclust")
+```
+:::
+
+
+## Questão 4
+
+
+### 4.1
+
+Utilizando os dados `percepcao_df`, daça uma análise de componentes principais usando a função `PCA()` do pacote `FactoMineR` e armazene os resultados no objeto `marcas_pca`. Utilize os argumentos `scale.unit = TRUE`, `graph = F`, qual o valor você deve estabelecer para o argumento `ncp`?
+
+::: {.callout-tip}
+## Solução
+
+```{r}
+marcas_pca <- FactoMineR::PCA(percepcao_df[, 1:9],
+                             scale.unit = TRUE,
+                             ncp = 10,
+                             graph = F)
+summary(marcas_pca)
+```
+::: 
+
+
+### 4.2
+
+Utilizando o objeto `marcas_pca` e a função `fviz_screeplot()` do 
+pacote `factoextra`, faça um Scree Plot. Considerando esse gráfico, 
+quantos componentes você considera suficientes para explicar a variação 
+total dos cados?
+
+::: {.callout-tip}
+## Solução
+
+```{r}
+factoextra::fviz_screeplot(
+  marcas_pca,
+  choice = "variance",
+  addlabels = TRUE,
+  ylim = c(0, 100)
+)
+```
+:::
+
+
+### 4.3
+
+Utilize a função `fviz_pca_var()` do pacote `factoextra` para 
+criar um  biplot das variáveis, isto é, dos atributos/adjetivos 
+atribuídos pelos entrevistados as marcas. Há algum padrão relevante? 
+Explique.
+
+
+::: {.callout-tip}
+## Solução
+
+```{r}
+factoextra::fviz_pca_var(marcas_pca, col.var = "orange")
+```
+:::
+
+
+### 4.4
+
+Utilize a função `fviz_pca_ind()` do pacote `factoextra` para criar 
+um biplot dos indivíduos, isto é, das marcas avaliadas. Há algum padrão 
+relevante? Explique.
+
+::: {.callout-tip}
+## Solução
+
+```{r}
+factoextra::fviz_pca_ind(marcas_pca, 
+                         select.ind = list("contrib"),
+                         repel = TRUE)
+```
+:::
+
+
+### 4.5
+
+Utilizando a função `fviz_pca_biplot` do pacote `factoextra` 
+crie um biplot contendo as variáveis e os indivíduos. Analise o 
+resultado desta pesquisa simulada de *percepção de marcas*.
+
+::: {.callout-tip}
+## Solução
+
+```{r}
+factoextra::fviz_pca_biplot(marcas_pca, 
+                label = "all",
+                invisible = "ind",
+                col.var = "orange",
+                col.ind = "blue",,
+                repel = TRUE)
+```
+:::
+
+
+
+
