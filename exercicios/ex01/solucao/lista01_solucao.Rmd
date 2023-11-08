@@ -1,46 +1,45 @@
 ---
-title: "Lista de Exercícios 1 - Resolução"
-subtitle: "Análise Multivariada - Bacharelado em Administação"
-author: "Prof. Dr. Washington S. da Silva"
-title-block-banner: "#27445C"
-format:
-  html:
-    page-layout: full
-    embed-resources: true
+title: "Análise Multivariada - Solução do Exercício 1"
+author: "Seu Nome"
+date: "2023-10-26"
+output: 
+  html_document:
+    theme: readable
     toc: true
-    toc-location: left
-    code-copy: true
-    css: styles.css
-lang: "pt"
-date: today
-execute: 
-  warning: false
-  message: false
+    toc_float: true
 ---
 
+<style type="text/css">
+  body{
+  font-size: 12pt;
+  text-align: justify
+      }
+</style>
 
-## Questão 1
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+
+# pacotes necessarios
+library(tidyverse)  # contém os pacotes readr e dplyr, entre outros
+library(corrplot)   # para usar a funcao corrplot()
+library(FactoMineR) # para usar a funcao PCA()
+library(factoextra) # para usar as funcoes fviz_pca_*
+```
 
 
-### 1.1 
+## 1. Importação dos Dados
+
+### 1.1
 
 Utilizando a funcão `read_csv()` do pacote `readr`. Importe o 
 arquivo de dados que está disponível na seguinte url e nomeie o 
 objeto que vai receber os dados como `percepcao_marcas`.
 
-::: {.callout-tip}
-## Solução
-
 ```{r}
-#| echo: true
-
 url <- "http://goo.gl/IQl8nc"
 percepcao_marcas <- readr::read_csv(url)
 ```
-:::
-
-
-
 
 ### 1.2
 
@@ -48,12 +47,7 @@ Verifique a estrutra do objeto `percepcao_marcas` usando a funcão glimpse
 do pacote `dplyr` e verifique se os dados importados são consistentes com 
 as informações.
 
-::: {.callout-tip}
-## Solução
-
 ```{r}
-#| echo: true
-
 dplyr::glimpse(percepcao_marcas)
 ```
 
@@ -61,16 +55,10 @@ Podemos verificar que há 1.000 linhas (cada um dos 100 consumidores avaliou
 cada uma das 10 marcas, atribuindo uma nota entre 1 e 10) e 10 colunas 
 (9 colunas contendo as notas associadas a cada adjetivo e uma coluna contendo 
 a marca avaliada), assim, aparentemente, os dados são consistentes com as informações fornecidas sobre a pesquisa.
-:::
 
-
-
-### 1.3
+### 1.3 
 
 Como você traduziria os 10 adjetivos usados para avaliar as marcas?
-
-::: {.callout-tip}
-## Solução
 
 | adjetivo    |   tradução         |
 |:-----------:|:------------------:|
@@ -85,43 +73,31 @@ Como você traduziria os 10 adjetivos usados para avaliar as marcas?
 | *rebuy*     | comprar novamente  |
 | *brand*     | marca.             |
 
-Entretanto, `brand`, obviamente, não é um adjetivo, é um substantivo, 
-que podemos traduzir como marca.
-:::
 
 
-## Questão 2
+## 2. Preparação dos Dados
 
 ### 2.1
 
-Podemos utilizar as funções `mutate()` e `across()` do pacote dplyr para converter as variáveis `perform`, `leader`, `latest`, `fun`, `serious`, `bargain`, `value`, `trendy` e `rebuy` para o tipo `integer` e a variável 
-`brand` para o tipo `factor`. Verifique se a transformação foi bem sucedida usando a função `glimpse()` do pacote dplyr no objeto `percepcao_df`.
-
-::: {.callout-tip}
-## Solução
+Podemos utilizar as funções mutate e across do pacote dplyr para converter as variáveis `perform`, `leader`, `latest`, `fun`, `serious`, `bargain`, `value`, `trendy` e `rebuy` para o tipo `integer` e a variável `brand` para o tipo 
+`factor`. Verifique se a transformação foi bem sucedida usando 
+função `glimpse()` do pacote dplyr no objeto `percepcao_df`.
 
 ```{r}
-percepcao_df <- percepcao_marcas |>
+percepcao_df <- percepcao_marcas %>%
   dplyr::mutate(across(1:9, as.integer),
-                across(10, as.factor))
+                across(10, as.factor))  
+```
 
+Verificando se a transformacão foi bem sucedida:
+
+```{r}
 dplyr::glimpse(percepcao_df)
 ```
 
-Vemos que a transformação foi bem sucedida, as variáveis `perform`, `leader`, `latest`, `fun`, `serious`, `bargain`, `value`, `trendy` e `rebuy` foram convertidas para o tipo integer e a variável `brand` foi convertida para o 
-tipo, mais precisamente, para a classe `factor`.
-:::
 
 
-## Questão 3
-
-### 3.1
-
-Podemos usar a funcão `corrplot` do pacote corrplot para explorar a correlação bivariada entre as variáveis. O que você conclui observando este gráfico de correlações: Há correlações relevantes entre as variáveis (avaliações dadas 
-pelos consumidores às marcas)? Você consegue visualizar os clusters formados? Quantos e quais são?
-
-::: {.callout-tip}
-## Solução
+## 3. Análise Exploratória dos Dados
 
 ```{r}
 corrplot::corrplot(cor(percepcao_df[ , 1:9]) , order = "hclust")
@@ -129,7 +105,8 @@ corrplot::corrplot(cor(percepcao_df[ , 1:9]) , order = "hclust")
 
 Neste gráfico, o tamanho do coeficiente de correlação entre as variáveis é 
 proporcional à àrea dos círculos. Além disso, a cor do círculo varia entre 
-azul escuro, que indica forte correlação positiva, $r$ é próximo de +1, e vermelho escuro, que indica forte correlação negativa, $r$ é próximo de -1. A cor branca indica ausência de correlação, $r$ é próximo de 0.
+azul escuro, que indica forte correlação positiva, $r$ é próximo de +1, e vermelho escuro, que indica forte correlação negativa, $r$ é próximo de -1. 
+A cor branca indica ausência de correlação, $r$ é próximo de 0.
 
 Assim, podemos ver que a forte correlação positiva entre `trendy` e `latest` 
 e entre `value` e `bargain`. Além disso, podemos ver que a uma correlação 
@@ -138,19 +115,16 @@ podemos afirmar que há algumas correlacões relevantes entre as variáveis.
 
 Podemos visualizar a formação de três clusters envolvendo variáveis 
 similares, o primeiro envolve `fun`, `latest` e `trendy`, o segundo `rebuy`, `bargain` e `value`, e o terceiro `perform`, `leader` e `serious`.
-:::
 
 
 
-## Questão 4
+## 4. Análise de Componentes Principais
 
+### 4.1 
 
-### 4.1
-
-Utilizando os dados `percepcao_df`, daça uma análise de componentes principais usando a função `PCA()` do pacote `FactoMineR` e armazene os resultados no objeto `marcas_pca`. Utilize os argumentos `scale.unit = TRUE`, `graph = F`, qual o valor você deve estabelecer para o argumento `ncp`?
-
-::: {.callout-tip}
-## Solução
+Utilizando os dados `percepcao_df`, daça uma análise de componentes principais usando a função `PCA()` do pacote `FactoMineR` e armazene os resultados no 
+objeto `marcas_pca`. Utilize os argumentos `scale.unit = TRUE`, `graph = F`, 
+qual o valor você deve estabelecer para o argumento `ncp`?
 
 ```{r}
 marcas_pca <- FactoMineR::PCA(percepcao_df[, 1:9],
@@ -159,7 +133,6 @@ marcas_pca <- FactoMineR::PCA(percepcao_df[, 1:9],
                              graph = F)
 summary(marcas_pca)
 ```
-::: 
 
 
 ### 4.2
@@ -168,9 +141,6 @@ Utilizando o objeto `marcas_pca` e a função `fviz_screeplot()` do
 pacote `factoextra`, faça um Scree Plot. Considerando esse gráfico, 
 quantos componentes você considera suficientes para explicar a variação 
 total dos cados?
-
-::: {.callout-tip}
-## Solução
 
 ```{r}
 factoextra::fviz_screeplot(
@@ -191,7 +161,6 @@ Conforme comentamos em aula, não há resposta simples e única
 para esta questão, ela depende da precisão que se deseja para a 
 a redução da dimensão dos dados, assim 6 ou 7 componentes constituem 
 um número de componentes bastante adequado.
-:::
 
 
 ### 4.3
@@ -201,13 +170,10 @@ criar um  biplot das variáveis, isto é, dos atributos/adjetivos
 atribuídos pelos entrevistados as marcas. Há algum padrão relevante? 
 Explique.
 
-
-::: {.callout-tip}
-## Solução
-
 ```{r}
 factoextra::fviz_pca_var(marcas_pca, col.var = "orange")
 ```
+
 
 Podemoos visualizar que os 9 adjetivos são mapeados em 4 categorias: 
 
@@ -218,7 +184,6 @@ Podemoos visualizar que os 9 adjetivos são mapeados em 4 categorias:
 - **tendência**: `trendy` e `latest` no quadrante esquerdo superior.
 
 - **diversão**: `fun` isolada no quadrante esquerdo inferior.
-:::
 
 
 ### 4.4
@@ -226,9 +191,6 @@ Podemoos visualizar que os 9 adjetivos são mapeados em 4 categorias:
 Utilize a função `fviz_pca_ind()` do pacote `factoextra` para criar 
 um biplot dos indivíduos, isto é, das marcas avaliadas. Há algum padrão 
 relevante? Explique.
-
-::: {.callout-tip}
-## Solução
 
 ```{r}
 factoextra::fviz_pca_ind(marcas_pca, 
@@ -240,7 +202,6 @@ factoextra::fviz_pca_ind(marcas_pca,
 não é possível vizualizar nenhum padrão relevante entre as 1.000 avaliações 
 individuais. Trata-se de uma limitacão desses mapas perceptuais, nào é 
 possível interpretá-los quando há centenas de "indivíduos".
-:::
 
 
 ### 4.5
@@ -248,9 +209,6 @@ possível interpretá-los quando há centenas de "indivíduos".
 Utilizando a função `fviz_pca_biplot` do pacote `factoextra` 
 crie um biplot contendo as variáveis e os indivíduos. Analise o 
 resultado desta pesquisa simulada de *percepção de marcas*.
-
-::: {.callout-tip}
-## Solução
 
 ```{r}
 factoextra::fviz_pca_biplot(marcas_pca, 
@@ -260,22 +218,8 @@ factoextra::fviz_pca_biplot(marcas_pca,
                 repel = TRUE)
 ```
 
-Como vimos na questão 4.3, ainda é possível ver neste biplot que os 
-9 adjetivos podem ser agrupados em 4 categorias: liderança, valor, 
-tendência e diversão. 
-
-Entretanto, novamente nos deparamos com o problema já constatado na questão 
-4.4: a nuvem das avaliações individuais dos entrevistados é muito densa e 
-não nos informa sobre as posições das marcas. Portanto, novamente 
-constatamos que é impossível interpretar um biplot contendo tantos 
-indivíduos ou avaliações individuais neste caso.
-:::
-
 
 ## EXTRA: Estratégia para lidar com muitos "indivíduos"
-
-::: {.callout-note}
-# Avaliações médias agregadas por marca
 
 Uma possível solução para tornar interpretável o biplot envolvendo as 
 variáveis, adjetivos associados às marcas no caso, e os indivíduos, 
@@ -290,7 +234,7 @@ Podemos visualizar essa estrutura utilizando a função count do
 pacote dplyr:
 
 ```{r}
-percepcao_df |> dplyr::count(brand)
+percepcao_df %>% dplyr::count(brand)
 ```
 
 Assim, o que estamos denominando avaliacão ou classificação média atribuída 
@@ -300,7 +244,7 @@ somando as 100 notas atribuídas pelos 100 consumidores entrevistados e
 dividindo por 100, assim por diante para cada uma das 10 marcas e 9 adjetivos.
 
 Antes de calcular as avaliações médias agregadas por marca, vamos 
-tornar o objeto `percepcao_df` mais adequado para a análise de
+tornar o objetov `percepcao_marcas` mais adequado para a análise de
 componentes principais. 
 
 Inicialmente, vamos padronizar as 9 variáveis, ou seja, subtrair a 
@@ -317,7 +261,7 @@ agregadas por marca, ou seja, a média de cada variável (adjetivo) por marca.
 
 ```{r}
 #| eval: true
-percepcao_df_media <- aggregate(. ~ brand, data = percepcao_df, mean)
+percepcao_df_media <- aggregate(. ~ brand, data = percepcao_marcas, mean)
 percepcao_df_media
 ```
 
@@ -388,7 +332,7 @@ de observações.
 Com esse mapa, pode-se formular perguntas e depois consultar os dados 
 subjacentes para respondê-las. 
 
-### Suponha que você seja o gerente de marca da marca "e", o que o mapa lhe diz? 
+### Suponha que você seja o gerente de marca da marca "e", o que o mapa lhe diz? {.unlisted .unnumbered} 
 
 Por um lado, a sua marca está no centro, portanto, parece não ser bem 
 diferenciada em nenhuma das dimensões. 
@@ -398,7 +342,7 @@ seu objetivo é ser uma marca segura que atraia muitos consumidores, então uma 
 
 Por outro lado, se você deseja que sua marca tenha uma percepção forte e diferenciada, essa constatação seria indesejada. 
 
-### O que você deve fazer em relação ao posicionamento da sua marca "e"?** 
+### O que você deve fazer em relação ao posicionamento da sua marca "e"? {.unlisted .unnumbered}
 
 Novamente, depende dos objetivos estratégicos. Se você deseja aumentar a diferenciação, uma possibilidade seria tomar medidas para mudar sua marca 
 em alguma direção no mapa. 
@@ -420,7 +364,7 @@ onde nenhuma marca esteja posicionada. No biplot, há uma grande lacuna entre os
 grupos "b" e "c" na parte inferior do gráfico, versus "f" e "g" na parte 
 superior direita. Esta área pode ser descrita como área de “líder de valor” ou similar.
 
-### Como descobrimos como nos posicionar nesta região não ocupada?
+### Como descobrimos como nos posicionar nesta região não ocupada? {.unlisted .unnumbered}
 
 Vamos supor que a diferença reflita aproximadamente a média dessas 
 quatro marcas. Podemos encontrar essa média usando a função `colMeans()` nas 
@@ -435,7 +379,13 @@ colMeans(percepcao_df_media[c("b", "c", "f", "g"),]) -
 
 Isto sugere que a marca "e" poderia focar a lacuna aumentando a sua ênfase em 
 `perform` e ao mesmo tempo que reduzir a ênfase em `latest` e `fun`.
-:::
+
+
+
+
+
+
+
 
 
 

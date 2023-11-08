@@ -15,6 +15,7 @@
 # packages
 library(readr)
 library(here)
+library(psych)
 
 # frequências para cada célula
 

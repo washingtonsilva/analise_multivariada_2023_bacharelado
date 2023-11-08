@@ -65,7 +65,7 @@ usando a funcão glimpse do pacote `dplyr` e verifique se os dados
 importados são consistentes com as informações acima.
 
 
-3. Como você traduziria os 10 adjetivos usados para avaliar as marcas?
+1.3. Como você traduziria os 10 adjetivos usados para avaliar as marcas?
 
 
 ### 2. Preparação dos Dados
