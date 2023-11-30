@@ -1,0 +1,97 @@
+---
+title: " Lista de Exercícios 3"
+subtitle: "Disciplina: Análise Multivariada - Bacharelado em Administração"
+author: Prof. Washington S. da Silva 
+title-block-banner: "#27445C"
+format:
+  html:
+    embed-resources: true
+    toc: false
+    toc-location: left
+    code-copy: true
+    css: styles.css
+lang: "pt"
+date: today
+execute: 
+  warning: false
+  message: false
+---
+
+## Questão 1
+
+Muitos modelos econômicos e financeiros utilizam taxas de juros como variáveis 
+preditoras, ou idependentes. Os analistas podem querer incluir taxas de juros 
+sobre um grande número de ativos diferentes, a fim de refletir a variedade de 
+oportunidades de investimento abertas aos investidores.
+
+Contudo, pode-se argumentar que as taxas de juros de mercado não são 
+suficientemente independentes umas das outras para tornar estatisticamente 
+sensata a inclusão de várias séries de taxas de juro em um modelo econométrico. 
+Como estas séries tendem a ser fortemente correlacionadas, incluí-las em um 
+modelo de regressão, por exemplo, pode implicar em multicolinearidade 
+substancial.
+
+Uma abordagem para esta questão seria aplicar a Análise de Componentes 
+Principais (PCA) em diversas séries de taxas de juros relacionadas 
+para determinar reduzir a dimensão dos dados. Assim, neste caso, utilizar um 
+ou mais componentes principais como variáveis preditoras, ao invés das diveras 
+taxas de juros correlacionadas faria sentido.
+
+@brooks4ed disponibilizou o arquivo `fred.csv` que contém 
+seis séries mensais de taxas de juros de notas e títulos do Tesouro dos EUA 
+com diferentes vencimentos. As séries abrangem o período entre janeiro de 1982 
+e maio de 2018. Um dicionário doarquivo de dados é apresentado na @tbl-series.
+
+| variável | descrição                                          |
+| :------- | :------------------------------------------------- |
+| Date     | data/mês da observação                             |
+| GS3M     | Rendimento da nota do Tesouro dos EUA de 3 meses   |
+| GS6M     | Rendimento da nota do Tesouro dos EUA de 6 meses   |
+| GS1      | Rendimento do título do Tesouro dos EUA de 1 ano   |
+| GS3      | Rendimento do título do Tesouro dos EUA de 3 anos  |
+| GS5      | Rendimento do título do Tesouro dos EUA de 5 anos  |
+| GS10     | Rendimento do título do Tesouro dos EUA de 10 anos |
+: Séries de Taxas de Juros: Jan/1982 - Mai/2018. {#tbl-series}
+
+
+**1.** Importe o arquivo `fred.csv` utilizando a url disponibilizada 
+abaixo e a funcão `readr::read_csv()`. Armazene os dados importados no objeto 
+`taxas_juros`, analise a estrutura dos dados importados com `dplyr::glimpse()`. 
+A primeira coluna do objeto contém a data/mês das séries, elimine esta 
+primeira coluna usando `taxas_juros[,-1]` e armazene o 
+resultado no objeto `taxas_juros`, verifique se a estrutura 
+dos dados está adequada para a PCA com `dplyr::glimpse()`.
+
+```
+url <- "https://bit.ly/3R4iT4h"
+```
+
+
+**2.** Elabore uma matriz de gráficos de dispersão utilizando a função `PerformanceAnalytics::chart.Correlation()` e o objeto `taxas_juros`. 
+Inspecionando os gráficos, podemos dizer que as séries de taxas de juros 
+apresentem correlação significativa que justifique a aplicação da PCA? 
+
+
+
+**3.** Execute a PCA utilizando a função `FactoMineR::PCA()`, armazene os 
+resultado no objeto `pca_juros`, exiba os resultados. Faça um 
+Scree Plot usando a função `factoextra::fviz_screeplot()`. Analisando 
+os resultados, quantos componentes você utilizaria como 
+variáveis preditoras, ao invés das seis séries originais?
+
+
+
+**4.** Exiba os vetores das cargas dos componentes usando `pca_juros$rotation`. 
+Além disso, escreva o vetor de cargas dos componentes que você utilizaria, 
+conforme a resposta da questão anterior.
+
+
+
+**5.** Se o primeiro componente compreende cargas aproximadamente iguais 
+para todas as seis séries (independentemente do sinal), e o segundo componente 
+atribui cargas negativas maiores às séries com vencimento mais longos e as 
+cargas aumentam gradualmente para as séries com vencimentos mais curtos, é 
+comum interpretar o primeiro componente como aquele que captura o nível das 
+taxas de juros e o segundo componente como o que captura a inclinação da 
+Estrutura a Termo da taxa de juros. Os resultados são compatíveis com esta 
+interpretação?
