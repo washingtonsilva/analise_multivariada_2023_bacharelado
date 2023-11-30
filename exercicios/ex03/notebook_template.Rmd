@@ -1,0 +1,37 @@
+---
+title: "Lista de Exercícios 3"
+author: "Seu Nome"
+output: html_notebook
+---
+
+
+```{r setup, warning=FALSE, message=FALSE}
+library(readr)
+library(dplyr)
+library(PerformanceAnalytics)
+library(FactoMineR)
+library(factoextra)
+```
+
+
+## 1
+
+```{r}
+url <- "https://bit.ly/3R4iT4h"
+```
+
+
+
+## 2
+
+
+
+## 3 
+
+
+
+## 4 
+
+
+
+## 5 
